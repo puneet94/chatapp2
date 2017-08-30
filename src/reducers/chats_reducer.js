@@ -36,12 +36,9 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 	case CHAT_TRANSFERRED:
 		const chatRoomId = action.payload.roomId;
 		let chatRoomLastMessage = {}
-		if(state.chatsHash[chatRoomId].lastMessage){
-			chatRoomLastMessage = {...state.chatsHash[chatRoomId].lastMessage,message:action.payload.message,
+		chatRoomLastMessage = {...state.chatsHash[chatRoomId].lastMessage,message:action.payload.message,
 				user:action.payload.user}
-		}else{
-			chatRoomLastMessage = {message:action.payload.message,user:action.payload.user}
-		}
+		
 		const chatRoomUpdate = {...state.chatsHash[chatRoomId],
 				lastMessage:{...chatRoomLastMessage},
 				lastMessageTime: new Date()
@@ -94,20 +91,14 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 	case CREATE_CHAT_ROOM:
 		console.log("the chat create");
 		console.log(action.payload);
-		let chatIndex = state.all.chats.indexOf(action.payload._id);
-		let chatRoomCheck = state.chatsHash[action.payload._id];
-		let oldChatRoom = {...action.payload,lastMessage:{
-			message: '',
-			type: '',
-			time: new Date()
-		},lastMessageTime:new Date(),lastLoggedOut:new Date()};
+
+		let receivedchatRoom = action.payload;
+		let newCreateChatRoom = {...state.chatsHash[receivedchatRoom._id],...receivedchatRoom};
+		console.log(newCreateChatRoom);
+		const newStateChatroom = {...state, chatsHash:{...state.chatsHash,...{[receivedchatRoom._id]:newCreateChatRoom}}};    
+		console.log(newStateChatroom);
+		return newStateChatroom;
 		
-		let newCreateChatRoom = {[action.payload._id]:action.payload};
-		
-		if(!chatRoomCheck && chatIndex==-1){
-			console.log("entered create chatroom");
-			return {...state, chatsHash:{...state.chatsHash,...newCreateChatRoom},all:{...state.all,chats:[action.payload._id,...state.all.chats]}};    
-		}return state;
 		
 	case REVEALED_CHATS_RECEIVED:
 		if(action.payload.page==1){

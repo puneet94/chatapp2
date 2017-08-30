@@ -1,4 +1,5 @@
-import React, {Component} from "react";  
+import React, {Component} from "react"; 
+import delay from "lodash/delay";
 import {View,Text,
 	StyleSheet,
 	Image,
@@ -183,19 +184,18 @@ class ChatBoxComponent extends Component {
 			console.log("error in chat mount");
 			console.log(e);
 		}
+		InteractionManager.runAfterInteractions(() => {
+      this.listRef.scrollToEnd();
+    });
 	}
 	_scroll = (getChats) => {
-		if (Platform.OS === "ios") {
-			this
-				.listRef
-				.scrollToEnd();
-		} else {
+		if (this.listRef && Platform.OS === "ios") {
 			this.listRef.scrollToEnd();
+		} else {
+			if(this.listRef){
+				delay(() => this.listRef.scrollToEnd(), 100);
+			}
 			
-		}
-		if(getChats){
-			//this.props.getAllChats(1);
-			//this.props.getAllChats(2);
 		}
 		
 	}

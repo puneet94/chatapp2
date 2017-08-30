@@ -25,8 +25,6 @@ class AllChatsComponent extends React.Component {
 		
 		let pages = this.props.all.pages;
 		let page = this.props.all.page;
-		console.log(pages);
-		console.log(page);
 		if(pages>=page){
 			this.props.getAllChats(page);
 		}
