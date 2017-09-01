@@ -26,11 +26,11 @@ export default class  SingleChatComponent extends PureComponent  {
 					<Text style={styles.userName}>
 						{chat.creator2.anonName}
 					</Text>
-					{chat.lastMessage?<View style={styles.userStatus}>
+					<View style={styles.userStatus}>
 						{chat.lastMessage.type=="img"?<Image style={styles.chatMessagePicture} source={{uri:chat.lastMessage.message}} />:
 							<Text style={styles.userTextMessage}>{chat.lastMessage.message}</Text>
 						}
-					</View>:<View></View>}
+					</View>
 					
 				</View>
 				<View style={styles.userMessageAlert}>

@@ -16,6 +16,17 @@ export const  fetchMessagesChatRoom=  (id,page,jwt_token)=>{
 	
 	
 };
+export const uploadImage = (imageString,jwt_token) => {
+		console.log(imageString,jwt_token);
+		return axios.post(`${URL}upload/stringUpload`,{
+            imageString: imageString
+		},{
+			headers:{
+				"Authorization": `Bearer ${jwt_token}`
+			},	
+        });
+};
+
 
 export const sendMessageChatRoom = (chat,jwt_token)=>{
 	

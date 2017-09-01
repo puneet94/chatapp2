@@ -40,8 +40,6 @@ export const chatTransferred = (chat) =>{
 }
 export const createChatRoom = (chatRoom)=>{
 	return (dispatch)=>{
-		console.log("chatroom dispatch");
-		console.log(chatRoom);
 		dispatch({type:CREATE_CHAT_ROOM,payload:chatRoom});
 	}
 }
@@ -54,8 +52,7 @@ export const updateChatRoom = (chatRoomId) => {
 				"Authorization": `Bearer ${jwt_token}`
 			},	
 		});
-
-
+		dispatch({type:CREATE_CHAT_ROOM,payload:response.data});
 		
 	};	
 };

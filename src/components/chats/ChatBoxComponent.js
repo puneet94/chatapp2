@@ -1,4 +1,5 @@
 import React, {Component} from "react"; 
+import PhotoUpload from 'react-native-photo-upload';
 import delay from "lodash/delay";
 import {View,Text,
 	StyleSheet,
@@ -27,18 +28,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const io = require("socket.io-client");
 const moment = require('moment');
 import _ from "lodash";
-import {fetchMessagesChatRoom, fetchChatRoom,sendMessageChatRoom} from "../../services/messages";
-import {fetchUser} from "../../services/user";
+import {fetchMessagesChatRoom, fetchChatRoom,sendMessageChatRoom,uploadImage} from "../../services/messages";
 import {URL} from "../../actions/constants";
 import {updateChatRoom,getAllChats,chatTransferred,createChatRoom} from "../../actions/chats";
-
-
 
 const userPage=(id)=>{
 	Actions.profile({userId:id});
 }
 class SingleChatComponent extends Component {
-
 	constructor(props){
 		super(props);
 	}
@@ -54,7 +51,6 @@ class SingleChatComponent extends Component {
 		: RkTheme.current.colors.chat.messageOutBackground;
 		let itemStyle = inMessage ? styles.itemIn : styles.itemOut;
 	
-		
 		return (
 			<View style={[styles.item, itemStyle]}>
 				{!inMessage && this.renderDate(chat.time)}
@@ -171,9 +167,10 @@ class ChatBoxComponent extends Component {
 			let response = await fetchChatRoom(this.props.userId, this.props.auth.jwt_token);
 			let chatRoom = response.data;
 			this.props.createChatRoom(chatRoom);
-			let userResponse = await fetchUser(this.props.userId, this.props.auth.jwt_token);
-			let receiver = userResponse.data;
-			
+			console.log("the chatroom error");
+			console.log(chatRoom._id);
+			//let userResponse = await fetchUser(this.props.userId, this.props.auth.jwt_token);
+			let receiver = chatRoom.creator2;
 			this.getMessages(chatRoom._id, this.state.page, this.props.auth.jwt_token);
 			this.socketInit(chatRoom._id);
 			this.props.navigation.setParams({
@@ -185,29 +182,41 @@ class ChatBoxComponent extends Component {
 			console.log(e);
 		}
 		InteractionManager.runAfterInteractions(() => {
-      this.listRef.scrollToEnd();
+      if(this.listRef){
+				this.listRef.scrollToEnd();
+			}
     });
 	}
 	_scroll = (getChats) => {
-		if (this.listRef && Platform.OS === "ios") {
-			this.listRef.scrollToEnd();
+		if ( Platform.OS === "ios") {
+			if(this.listRef){
+				this.listRef.scrollToEnd();
+			}
 		} else {
 			if(this.listRef){
-				delay(() => this.listRef.scrollToEnd(), 100);
+				this.listRef.scrollToEnd();
 			}
-			
 		}
-		
 	}
-	sendChatMessage = async () => {
+	sendChatMessage = async (sendImage) => {
 		this.setState({
 			refreshing: true
 		});
-		const newMessage = {
-			message: this.state.chatMessage,
-			receiver: this.props.userId,
-			roomId: this.state.chatRoom._id
-		};
+		let newMessage = {};
+		if(sendImage){
+			newMessage = {
+				message: sendImage,
+				receiver: this.props.userId,
+				roomId: this.state.chatRoom._id,
+				type: 'img'
+			};
+		}else{
+			newMessage = {
+				message: this.state.chatMessage,
+				receiver: this.props.userId,
+				roomId: this.state.chatRoom._id,
+			};
+		}
 		this.props.chatTransferred(newMessage);
 		let response = await sendMessageChatRoom(newMessage,this.props.auth.jwt_token);
 		this.setState((prevState) => {			
@@ -225,6 +234,26 @@ class ChatBoxComponent extends Component {
 			});
 		});
 		
+	}
+	onPhotoSelect = avatar => {
+		if (avatar) {
+			console.log('Image base64 string: ', avatar);
+			this.setState({
+				showChatImage: true,
+				chatImage: avatar
+			});
+		}
+	}
+	cancelImageUpload = ()=>{
+		this.setState({
+			showChatImage: false,
+			chatImage: ""
+		});
+	}
+	sendImage = async ()=>{
+		let imageResponse = await uploadImage(this.state.chatImage,this.props.auth.jwt_token);
+		this.sendChatMessage(imageResponse.data.image);
+		this.cancelImageUpload();
 	}
 	loadMoreMessages = () => {
 		const page = this.state.page + 1;
@@ -254,38 +283,38 @@ class ChatBoxComponent extends Component {
 							refreshing={this.state.refreshing}
 							ref={(ref) => {
 								this.listRef = ref;
-							}}
-						  
+							}}	  
 				/>
+				{this.state.showChatImage?<View style={styles.imageUploadContainer}>
+							<Image style={styles.imageUploadImage} source={{uri:"data:image/jpeg;base64,"+this.state.chatImage}}/>
+							<Button style={styles.imageUploadSend} title="Send" onPress={()=>this.sendImage()}>{"SEND"}</Button>
+							<Button style={styles.imageUploadCancel} title="Cancel" onPress={()=>this.cancelImageUpload()}>{"CANCEL"}</Button>
+				</View>:<View></View>}
 				<View style={styles.footer}>
-				  <RkButton style={styles.plus} rkType='clear'>
-						<RkText rkType='awesome secondaryColor'>
-							<Ionicons name="md-camera" size={24} color="black"/>
-						</RkText>
-				  </RkButton>
+					<PhotoUpload pickerTitle={"Send Image"}
+  					onPhotoSelect={this.onPhotoSelect}   quality={100}>
+								<Ionicons name="md-camera" size={24} color="black"/>
+ 					</PhotoUpload>
 				  <RkTextInput
 						onFocus={() => this._scroll()}
 						onBlur={() => this._scroll()}
+						style={styles.chatInput}
 						onChangeText={(chatMessage) => this.setState({chatMessage})}
 						value={this.state.chatMessage}
 						rkType='row sticker'
 						placeholder="Add a comment..."
 					/>
-				  <RkButton onPress={this.sendChatMessage} style={styles.send} rkType='circle highlight' disabled={this.state.refreshing}>
+				  <RkButton onPress={()=>this.sendChatMessage()} style={styles.send} rkType='circle highlight' disabled={this.state.refreshing}>
 						<Ionicons name="md-send" size={23} color="white"/>
 				  </RkButton>
 				</View>
 			</RkAvoidKeyboard>
-		
-
 		);
 	}
 	componentWillUnmount = ()=>{
-		//this.props.chatTransferred();
 		this.socket.emit('removeFromRoom', { 'roomId': this.state.chatRoom._id });
 		this.props.updateChatRoom(this.state.chatRoom._id);
-		//this.props.getAllChats(1);
-		//this.props.getAllChats(2);
+		
 	}
 }
 const mapStateToProps = (state) => {
@@ -308,6 +337,9 @@ let styles = RkStyleSheet.create(theme => ({
 	list: {
 		paddingRight: 5
 		
+	},
+	chatInput:{
+		flex:7
 	},
 	footer: {
 	  flexDirection: 'row',
@@ -336,13 +368,30 @@ let styles = RkStyleSheet.create(theme => ({
 	  margin: 15
 	},
 	plus: {
-	  paddingVertical: 10,
-	  paddingHorizontal: 10,
-	  marginRight: 7
+		
+		width: 30
 	},
 	send: {
 	  width: 40,
 	  height: 40,
-	  marginLeft: 10,
+	  marginLeft: 10
+	},
+	imageUploadContainer:{
+		justifyContent: "center",
+		height: 200,
+		width: 300,
+		flexDirection: "row",
+		alignItems: 'center',
+		marginLeft: 20
+	},
+	imageUploadImage:{
+		flex: 3,
+		alignSelf: "stretch"
+	},
+	imageUploadSend:{
+		flex: 1
+	},
+	imageUploadCancel:{
+		flex: 1
 	}
   }));

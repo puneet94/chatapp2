@@ -16,9 +16,12 @@ import ChatBoxComponent from "./src/components/chats/ChatBoxComponent.js";
 
 import SearchPostsComponent from "./src/components/search/SearchPostsComponent.js";
 import SearchProfileComponent from "./src/components/search/SearchProfileComponent.js";
-import SearchGroupComponent from "./src/components/search/SearchGroupComponent.js";
+
+
 import CreatePostComponent from "./src/components/search/CreatePostComponent.js";
-import CreateGroupChatComponent from "./src/components/search/CreateGroupChatComponent.js";
+import SubmitPostComponent from "./src/components/search/SubmitPostComponent.js";
+
+
 
 import LogoComponent from "./src/components/LogoComponent.js";
 
@@ -38,6 +41,7 @@ export default class App extends Component {
 						<Scene key="searchpost" component={SearchPostsComponent} />
 						<Scene key="searchprofile" component={SearchProfileComponent} />
 						<Scene key="createpost" component={CreatePostComponent} />
+						<Scene key="submitpost" component={SubmitPostComponent} />
 						<Scene key="allchat" component={ChatBoxComponent}  hideNavBar ={true}/>
 						<Scene key="singlePostPage" component={PostPageComponent}   />
 					</Scene>

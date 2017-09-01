@@ -12,6 +12,9 @@ class AllChatsComponent extends React.Component {
 		this.state = {
 			page: 1
 		};
+		console.ignoredYellowBox = [
+			'Setting a timer'
+		];
 	}
 	refreshChats = async ()=>{
 		await this.props.refreshAllChatPage();

@@ -2,35 +2,31 @@ import React,{Component} from 'react';
 import {
   View,
   ScrollView,
+  Text
 } from 'react-native';
 import {
   RkText,
   RkButton, RkStyleSheet
 } from 'react-native-ui-kitten';
 import {Avatar} from '../../components/avatar';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {connect} from "react-redux";
 import formatNumber from '../../utils/textUtils';
 import {Actions} from "react-native-router-flux";
 import {logout} from "../../actions/auth";
 import UserPostsComponent from "../../components/posts/UserPostsComponent";
 export class ProfilePageComponent extends Component {
-  static navigationOptions = {
-    title: 'ME'
-  };
-
   constructor(props) {
     super(props);
-    //let {params} = this.props.navigation.state;
-    //let id = params ? params.id : 1;
-    //this.user = data.getUser(id);
   }
-
   render() {
-    //let name = `${this.user.firstName} ${this.user.lastName}`;
-	//let images = this.user.images.map((image) => image.id);
 	const user = this.props.user;
     return (
-      <ScrollView style={styles.root}>
+      <ScrollView style={styles.root} stickyHeaderIndices={[0]}>
+        <View style={{height:50,backgroundColor:"blue",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
+        <Text style={{color:"white"}}>{"Me"}</Text>
+        <Ionicons name="md-settings" size={24} color="white"/>
+      </View>
         <View style={[styles.header, styles.bordered]}>
           <Avatar img={user.picture} rkType='big'/>
           <RkText rkType='header2'>{user.anonName}</RkText>

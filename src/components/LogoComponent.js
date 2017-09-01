@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Text,AsyncStorage,BackHandler} from 'react-native';
+import {View,Text,AsyncStorage,BackHandler,Alert} from 'react-native';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import {fetchUserDetails,fetchUserLocationDetails} from '../actions/user.js';
@@ -32,7 +32,7 @@ class LogoComponent extends Component{
 		this.configureBackButton();
 		return (
 			<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>            
-				<Text style={{fontSize:26,fontWeight:"600"}}>{"Gossip"}</Text>
+				<Text style={{fontSize:32,fontWeight:"600"}}>{"Gossip"}</Text>
 			</View>            
 		);
 	}
@@ -45,6 +45,15 @@ class LogoComponent extends Component{
 			onRegister: function(token) {
 				console.log('*********************token****************************');
 				console.log(  token );
+				Alert.alert(
+					'Delete Post',
+					token,
+					[
+					  {text: 'Yes'},
+					  {text: 'Cancel'}
+					],
+					{ cancelable: true }
+				  );
 			},
 		
 			// (required) Called when a remote or local notification is opened or received

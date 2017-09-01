@@ -35,9 +35,12 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 		return {...state,all:{...state.all,loading: true}};
 	case CHAT_TRANSFERRED:
 		const chatRoomId = action.payload.roomId;
-		let chatRoomLastMessage = {}
-		chatRoomLastMessage = {...state.chatsHash[chatRoomId].lastMessage,message:action.payload.message,
-				user:action.payload.user}
+		
+		console.log("after sending message");
+		console.log(action.payload);
+		console.log(state.chatsHash[chatRoomId].lastMessage);
+		const chatRoomLastMessage = {...state.chatsHash[chatRoomId].lastMessage,message:action.payload.message,
+				user:action.payload.user,type:action.payload.type}
 		
 		const chatRoomUpdate = {...state.chatsHash[chatRoomId],
 				lastMessage:{...chatRoomLastMessage},
@@ -53,7 +56,9 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 		}else{
 			newChatsIds = [chatRoomId,...state.all.chats];
 		}
-
+		
+		console.log(chatRoomLastMessage);
+		console.log(newChatRoomHash);
 		return {...state,all:{...state.all,chats:newChatsIds},chatsHash:newChatRoomHash};
 	case CHAT_RECEIVED:
 		
@@ -89,10 +94,8 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 		});
 		return {...state, chatsHash:{...state.chatsHash,...chatsHashNew}, all:{...state.all,chats:[...state.all.chats,...chatsIds],pages:action.payload.pages,loading:false}};
 	case CREATE_CHAT_ROOM:
-		console.log("the chat create");
-		console.log(action.payload);
-
-		let receivedchatRoom = action.payload;
+		
+		let receivedchatRoom = {...action.payload};
 		let newCreateChatRoom = {...state.chatsHash[receivedchatRoom._id],...receivedchatRoom};
 		console.log(newCreateChatRoom);
 		const newStateChatroom = {...state, chatsHash:{...state.chatsHash,...{[receivedchatRoom._id]:newCreateChatRoom}}};    

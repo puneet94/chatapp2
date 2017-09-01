@@ -133,6 +133,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+    compile project(':react-native-image-resizer')
+    compile project(':react-native-image-picker')
     
     
     
@@ -142,6 +145,7 @@ dependencies {
     compile project(':react-native-device-info')
     compile project(':react-native-vector-icons')
     compile project(':react-native-push-notification')
+    compile project(':react-native-image-picker')
     compile ('com.google.android.gms:play-services-gcm:9.0.0') {
         force = true;
     }

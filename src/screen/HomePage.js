@@ -1,11 +1,11 @@
 "use strict";
-
 import React,{Component} from "react";
 import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
 import LatestPostsComponent from "../components/posts/LatestPostsComponent";
 import PopularPostsComponent from "../components/posts/PopularPostsComponent";
 import NearbyPostsComponent from "../components/posts/NearbyPostsComponent";
-
+import {Actions} from "react-native-router-flux";
+import Entypo from 'react-native-vector-icons/Entypo';
 export default class HomePage extends Component {
 	constructor(props){
 		super(props);
@@ -65,12 +65,17 @@ export default class HomePage extends Component {
 						this.renderTabs()
 					}
 				</View>
-				<View style={styles.fabTouchableOpacity}></View>
+				<View style={styles.fabTouchableOpacity}>
+				<TouchableOpacity  onPress={ () => Actions.createpost() } >
+				<Entypo name="pencil" color="white" size={28}/>
+					</TouchableOpacity>
+				
+				
+				</View>
 			</View>
 		);
 	}
 }
-
 const styles = StyleSheet.create({
 	tabContainer: {
 		flex: 1,
@@ -89,12 +94,15 @@ const styles = StyleSheet.create({
 		flex: 11
 	},
 	fabTouchableOpacity:{
-		width: 60,
-		height: 60,
-		borderRadius: 30,
+		width: 50,
+		height: 50,
+		borderRadius: 25,
 		backgroundColor: "#ee6e73",
 		position: "absolute",
 		bottom: 10,
 		right: 10,
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center"
 	}
 });
