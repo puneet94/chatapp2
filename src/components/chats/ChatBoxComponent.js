@@ -1,5 +1,5 @@
 import React, {Component} from "react"; 
-import PhotoUpload from 'react-native-photo-upload';
+import PhotoUpload from '../search/PhotoUploadComponent';
 import delay from "lodash/delay";
 import {View,Text,
 	StyleSheet,
@@ -81,7 +81,8 @@ class ChatBoxComponent extends Component {
 			page: 1,
 			messages: [],
 			refreshing: true,
-			receiver: {}
+			receiver: {},
+			imagePickerLoading: false
 		};
 		console.ignoredYellowBox = [
 			'Setting a timer'
@@ -167,8 +168,7 @@ class ChatBoxComponent extends Component {
 			let response = await fetchChatRoom(this.props.userId, this.props.auth.jwt_token);
 			let chatRoom = response.data;
 			this.props.createChatRoom(chatRoom);
-			console.log("the chatroom error");
-			console.log(chatRoom._id);
+			
 			//let userResponse = await fetchUser(this.props.userId, this.props.auth.jwt_token);
 			let receiver = chatRoom.creator2;
 			this.getMessages(chatRoom._id, this.state.page, this.props.auth.jwt_token);
@@ -239,8 +239,8 @@ class ChatBoxComponent extends Component {
 		if (avatar) {
 			console.log('Image base64 string: ', avatar);
 			this.setState({
-				showChatImage: true,
-				chatImage: avatar
+				chatImage: avatar,
+				imagePickerLoading:false
 			});
 		}
 	}
@@ -286,14 +286,18 @@ class ChatBoxComponent extends Component {
 							}}	  
 				/>
 				{this.state.showChatImage?<View style={styles.imageUploadContainer}>
+							{this.state.imagePickerLoading?<Text>{"Loaidng"}</Text>:<View/>}
 							<Image style={styles.imageUploadImage} source={{uri:"data:image/jpeg;base64,"+this.state.chatImage}}/>
 							<Button style={styles.imageUploadSend} title="Send" onPress={()=>this.sendImage()}>{"SEND"}</Button>
 							<Button style={styles.imageUploadCancel} title="Cancel" onPress={()=>this.cancelImageUpload()}>{"CANCEL"}</Button>
 				</View>:<View></View>}
 				<View style={styles.footer}>
-					<PhotoUpload pickerTitle={"Send Image"}
+					<PhotoUpload 
+					onButtonCancel = {()=>{this.setState({imagePickerLoading:false,showChatImage: false});}}
+						pickerTitle={"Send Image"} 
+						onButtonPress =  {()=>{this.setState({imagePickerLoading:true,showChatImage: true});}} 
   					onPhotoSelect={this.onPhotoSelect}   quality={100}>
-								<Ionicons name="md-camera" size={24} color="black"/>
+							<Ionicons name="md-camera" size={24} color="black"/>
  					</PhotoUpload>
 				  <RkTextInput
 						onFocus={() => this._scroll()}

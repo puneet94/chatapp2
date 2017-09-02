@@ -17,7 +17,7 @@ import ChatBoxComponent from "./src/components/chats/ChatBoxComponent.js";
 import SearchPostsComponent from "./src/components/search/SearchPostsComponent.js";
 import SearchProfileComponent from "./src/components/search/SearchProfileComponent.js";
 
-
+import GalleryComponent from "./src/components/search/GalleryComponent";
 import CreatePostComponent from "./src/components/search/CreatePostComponent.js";
 import SubmitPostComponent from "./src/components/search/SubmitPostComponent.js";
 
@@ -44,6 +44,7 @@ export default class App extends Component {
 						<Scene key="submitpost" component={SubmitPostComponent} />
 						<Scene key="allchat" component={ChatBoxComponent}  hideNavBar ={true}/>
 						<Scene key="singlePostPage" component={PostPageComponent}   />
+						<Scene key="galleryPage" component={GalleryComponent}   />
 					</Scene>
 				</Router>
 			</Provider>

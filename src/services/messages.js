@@ -13,8 +13,6 @@ export const  fetchMessagesChatRoom=  (id,page,jwt_token)=>{
 			page: page
 		}
 	});
-	
-	
 };
 export const uploadImage = (imageString,jwt_token) => {
 		console.log(imageString,jwt_token);
