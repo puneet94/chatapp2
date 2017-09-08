@@ -8,31 +8,15 @@ export default class GalleryComponent extends PureComponent{
     }
 
     
-    currentImage=(item)=>{
-        if(item == this.props.randomImage){
-            return {
-                
-            };
-        }
-        else{
-            return {};
-        }
-    }
+    
     clickRandomImage = (imageUrl) => {
         this.props.selectRandomImage(imageUrl)
     }
     render = () => {
-        let style1 = {};
-        if(this.props.showBorder){
-            style1 = {
-                borderWidth: 0.5,
-                borderColor: 'yellow'
-            }
-        }
         return (
             <TouchableOpacity 
             onPress = {() => this.clickRandomImage(this.props.singleImage)} 
-            style = {style1}>
+            >
             <Image source = {{uri: this.props.singleImage}} 
             style={styles.singleImage}/>
             </TouchableOpacity>    
@@ -41,9 +25,8 @@ export default class GalleryComponent extends PureComponent{
 }
 const styles = StyleSheet.create({
     singleImage: {
-         width: windowSize/2.2,
-         height: windowSize/2.2,
-         flexWrap: 'wrap', 
+         width: windowSize/2,
+         height: windowSize/2, 
          margin: 5
     }
 });

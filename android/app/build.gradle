@@ -103,6 +103,16 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+        release {
+            
+            storeFile file('gossips-key.keystore')
+            storePassword 'gossips-alias'
+            keyAlias 'gossips'
+            keyPassword 'gossips'
+            
+        }
+    }
     splits {
         abi {
             reset()

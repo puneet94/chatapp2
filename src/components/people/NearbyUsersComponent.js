@@ -1,124 +1,71 @@
 "use strict";
 import React from "react";
-import { View, Text,Button,FlatList,Slider,StyleSheet } from "react-native";
+import { View, Text,Button,FlatList,ActivityIndicator } from "react-native";
 import {connect} from "react-redux";
-import {getNearbyUsers} from "../../actions/users";
+import {getNearbyUsers,refreshNearbyPage,incrementNearbyPage} from "../../actions/users";
 import {Actions} from "react-native-router-flux";
-
 import SingleUserComponent from "./SingleUserComponent";
-
 class NearbyUsersComponent extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			page: 1,
-			distance: 10
-		};
 	}
-    
-	componentWillMount = () => {
-		this.setState({ 
-			refreshing: true
-		});
-		this.props.getNearbyUsers(1,this.state.distance);            
-		this.setState({
-			refreshing: false
-		});
-		
+	refreshUsers = async ()=>{
+		await this.props.refreshNearbyPage();
+		this.props.getNearbyUsers(this.props.nearby.page);
 	}
-	refreshUsers = ()=>{
-		this.setState({
-			refreshing: true,
-			page: 1
-		},()=>{this.props.getNearbyUsers(this.state.page,this.state.distance);});
-		
-		
-		this.setState({
-			refreshing: false
-		});
+	componentWillMount = ()=>{
+		this.props.getNearbyUsers(this.props.nearby.page);
 	}
-	loadMoreUsers = ()=>{
-		if(this.props.nearby.pages>=(this.state.page+1)){
-			this.setState({
-				page: this.state.page+1
-			},()=>{
-				this.props.getNearbyUsers(this.state.page,this.state.distance);
-			});
+	loadMoreUsers = async ()=>{
+		await this.props.incrementNearbyPage();
+		if(this.props.nearby.pages>=this.props.nearby.page){
+			this.props.getNearbyUsers(this.props.nearby.page);
 		}
-		
-		
 	}
-	slidingComplete=(slideValue)=>{
-		this.setState({
-			distance:slideValue,
-			page: 1
-		},()=>{
-			this.refreshUsers();
-		});
+	_keyExtractor(user, index) {
+		return user;
 	}
-	
 	renderItem = ({item})=> {
-		return (<SingleUserComponent user= {item} location={this.props.location}/>);
+		return (<SingleUserComponent location={this.props.location} user= {this.props.usersHash[item]} />);
+	}
+	renderFooter = ()=>{
+		return(
+			
+			this.props.nearby.loading?<ActivityIndicator size="large" color="black"/>:<View/>
+		);
 	}
 	render=()=>{
-		if(this.props.nearby && !this.props.location_error){
+		if(this.props.nearby&&!this.props.location_error){
 			return (
 				<View style={{flex:1}}>
-					<View style={styles.sliderContainer}>
-						<Slider style={styles.slider}
-							maximumValue={1000}
-							minimumValue={10}
-							onSlidingComplete={this.slidingComplete}
-							step={5}
-						/>
-						<Text style={styles.sliderDistance}>
-							{this.state.distance}</Text>
-					</View>
-					<View style={styles.listContainer}>
-						<FlatList
-							data={this.props.nearby.users}
-							renderItem={this.renderItem}
-							keyExtractor={(item)=>item._id}
-							onEndReached={this.loadMoreUsers}
-							onEndReachedThreshold={0.1}
-							onRefresh={this.refreshUsers}
-							refreshing={this.state.refreshing}
-						/>
-					</View>
+					<FlatList
+						data={this.props.nearby.users}
+						renderItem={this.renderItem}
+						keyExtractor={this._keyExtractor}
+						onEndReached={this.loadMoreUsers}
+						onEndReachedThreshold={0.1}
+						onRefresh={this.refreshUsers}
+						refreshing={this.props.nearby.refreshing}
+						ListFooterComponent = {this.renderFooter}
+						style={{flex:1}}
+						initialNumToRender={10}
+					/>
 				</View>
 			);
 		}
 		return(
-			<Text>Not there</Text>
-			
+			<View style={{justifyContent:"center",flex:1}}>
+				<Text>Location Details not available.Turn on location and restart the app</Text>	
+			</View>
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	sliderContainer: {
-		flex: 1,
-		backgroundColor: "#fff",
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-		flexDirection:"row",
-		padding: 5,
-	},
-	slider:{
-		flex: 9
-	},
-	sliderDistance:{
-		flex:1
-	},
-	listContainer:{
-		flex:11
-	}
-});
 const mapStateToProps=(state)=>{
 	return {
 		nearby: state.users.nearby,
 		location: state.user.location,
-		location_error: state.user.user_location_error
+		location_error: state.user.user_location_error,
+		usersHash:state.users.usersHash
 	};
 };
-export default connect(mapStateToProps,{getNearbyUsers})(NearbyUsersComponent);
+export default connect(mapStateToProps,{getNearbyUsers,refreshNearbyPage,incrementNearbyPage})(NearbyUsersComponent);

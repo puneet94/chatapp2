@@ -29,16 +29,12 @@ class LatestPostsComponent extends Component {
 	renderItem = ({item})=> {
 		return (<SinglePostComponent post= {this.props.postsHash[item]} />);
 	}
-	/*renderFooter = ()=>{
-		return (
-			<View style={{flex:1}}>
-				<Text>{"FOOTER FOOTER"}</Text>
-				<ActivityIndicator animating size="large"/>
-			</View>
-		);
-	}*/
+	renderFooter = ()=>{
+			return(
+				this.props.latest.loading?<ActivityIndicator size="large" color="black"/>:<View/>
+			);
+	}
 	render=()=>{
-		
 		if(this.props.latest){
 			return (
 				<View style={{flex:1}}>
@@ -49,15 +45,9 @@ class LatestPostsComponent extends Component {
 						onEndReached={this.loadMorePosts}
 						onEndReachedThreshold={200}
 						onRefresh={this.refreshPosts}
-						
-						refreshing={this.props.latest.loading}
-						getItemLayout={(data, index) => (
-  							{length: 230, offset: 230 * index, index}
-						)}
-						
-					/>
-						
-				
+						ListFooterComponent = {this.renderFooter}
+						refreshing={this.props.latest.refreshing}
+					/>				
 				</View>
 			);
 		}

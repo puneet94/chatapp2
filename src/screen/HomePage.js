@@ -28,35 +28,44 @@ export default class HomePage extends Component {
 			);
 		}
 	}
+	currentText=(tabPage)=>{
+		if(tabPage === this.state.currentTab){
+			return {
+				color: "white",
+				fontSize: 14
+			};
+		}else{
+			return {};
+		}
+	}
 	currentTab=(tabPage)=>{
 		if(tabPage === this.state.currentTab){
 			return {
-				backgroundColor: "green"
+				borderBottomWidth: 3,
+				borderBottomColor: "white"
 			};
 		}else{
-			return {
-
-			};
+			return {};
 		}
 	}
 	setTab=(tab)=>{
 		this.setState({currentTab:tab});
 	}
 	render=()=>{
-		
 		return(
 			<View style={{flex:1}}>
 				<View style={styles.tabContainer}>
+					
 					<TouchableOpacity style={[styles.singleTab,this.currentTab(1)]} onPress={ () => this.setTab(1) } >
-						<Text style={{color:"white"}}>{"NEARBY"}</Text>  
+						<Text style={[styles.tabText,this.currentText(1)]}>{"NEARBY"}</Text>  
 					</TouchableOpacity>
 				
 					<TouchableOpacity style={[styles.singleTab,this.currentTab(2)]} onPress={ () => this.setTab(2) } >
-						<Text style={{color:"white"}}>{"POPULAR"}</Text>  
+						<Text style={[styles.tabText,this.currentText(2)]}>{"POPULAR"}</Text>  
 					</TouchableOpacity>
 				
 					<TouchableOpacity style={[styles.singleTab,this.currentTab(3)]} onPress={ () => this.setTab(3) } >
-						<Text style={{color:"white"}}>{"LATEST"}</Text> 
+						<Text style={[styles.tabText,this.currentText(3)]}>{"LATEST"}</Text> 
 					</TouchableOpacity>
 					
 				</View>
@@ -66,11 +75,9 @@ export default class HomePage extends Component {
 					}
 				</View>
 				<View style={styles.fabTouchableOpacity}>
-				<TouchableOpacity  onPress={ () => Actions.createpost() } >
-				<Entypo name="pencil" color="white" size={28}/>
+					<TouchableOpacity  onPress={ () => Actions.createpost() } >
+						<Entypo name="pencil" color="white" size={28}/>
 					</TouchableOpacity>
-				
-				
 				</View>
 			</View>
 		);
@@ -87,8 +94,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		alignSelf: "stretch",
-		backgroundColor: "blue",
+		backgroundColor: "#1919ff",
 		justifyContent: "center"
+	},
+	tabText:{
+		color: "#fff",
+		fontSize: 13
 	},
 	singleTabContainer:{
 		flex: 11

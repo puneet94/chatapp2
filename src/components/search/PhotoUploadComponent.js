@@ -59,17 +59,26 @@ export default class PhotoUpload extends React.Component {
       let { height, width, quality, format } = this.state
 
       // resize image
-      const resizedImageUri = await ImageResizer.createResizedImage(
+
+
+      
+      const resizedImage = await ImageResizer.createResizedImage(
         `data:image/jpeg;base64,${response.data}`,
         height,
         width,
         format,
         quality
-      )
+      );
+      const resizedImageUri = resizedImage.uri;
+      
+
+      
       const filePath = Platform.OS === 'android' && resizedImageUri.replace
         ? resizedImageUri.replace('file:/data', '/data')
         : resizedImageUri
 
+
+      
       // convert image back to base64 string
       const photoData = await RNFS.readFile(filePath, 'base64')
       let source = { uri: resizedImageUri }

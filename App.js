@@ -21,30 +21,29 @@ import GalleryComponent from "./src/components/search/GalleryComponent";
 import CreatePostComponent from "./src/components/search/CreatePostComponent.js";
 import SubmitPostComponent from "./src/components/search/SubmitPostComponent.js";
 
-
-
+import ProfileSettingsComponent from "./src/components/user/ProfileSettingsComponent";
 import LogoComponent from "./src/components/LogoComponent.js";
-
 import PostPageComponent from "./src/components/posts/PostPageComponent.js";
 bootstrap();
+//#1919ff
 export default class App extends Component {
-	
 	render=()=>{
 		return (
 			<Provider store={store}>
 				<Router style={styles.container}>
-					<Scene key="root" >
+					<Scene key="root"  navigationBarStyle={{backgroundColor: '#1919ff'}}  titleStyle={{color : "#FFF"}}>
 						<Scene key="logo" component={LogoComponent} hideNavBar ={true} />
 						<Scene key="auth" component={AuthComponent} hideNavBar ={true} />
 						<Scene key="tabs" component={TabsComponent} hideNavBar ={true}  type={ActionConst.RESET} />
 						<Scene key="profile" component={OtherProfileComponent} />
-						<Scene key="searchpost" component={SearchPostsComponent} />
+						<Scene key="searchpost" component={SearchPostsComponent} title={"Search Posts"} leftButtonIconStyle={{ tintColor: 'white' }}/>
 						<Scene key="searchprofile" component={SearchProfileComponent} />
 						<Scene key="createpost" component={CreatePostComponent} />
 						<Scene key="submitpost" component={SubmitPostComponent} />
 						<Scene key="allchat" component={ChatBoxComponent}  hideNavBar ={true}/>
 						<Scene key="singlePostPage" component={PostPageComponent}   />
 						<Scene key="galleryPage" component={GalleryComponent}   />
+						<Scene key="profilesettings" component={ProfileSettingsComponent}/>
 					</Scene>
 				</Router>
 			</Provider>

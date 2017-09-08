@@ -1,50 +1,49 @@
 "use strict";
 import React from "react";
-import { View, Text,Button,FlatList } from "react-native";
+import { View, Text,Button,FlatList,ActivityIndicator,TouchableOpacity } from "react-native";
 import {connect} from "react-redux";
-import {getPopularPosts,incrementPopularPostsPage} from "../../actions/posts";
+import {getPopularPosts,refreshPopularPage,incrementPopularPage} from "../../actions/posts";
 import {Actions} from "react-native-router-flux";
 import SinglePostComponent from "./SinglePostComponent";
 class PopularPostsComponent extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			page: 1
-		};
 	}
-	componentWillMount=()=>{
-		this.setState({
-			refreshing: true
-		});
-		this.props.getPopularPosts(1);
-		this.setState({
-			refreshing: false
-		});
-		
+	refreshPosts = async ()=>{
+		await this.props.refreshPopularPage();
+		this.props.getPopularPosts(this.props.popular.page);
 	}
-	refreshPosts = ()=>{
-		this.setState({
-			refreshing: true,
-			page: 1
-		},()=>{
-			this.props.getPopularPosts(1);
-		});
-		
-		
+	componentWillMount = ()=>{
+		this.props.getPopularPosts(this.props.popular.page);
 	}
-	loadMorePosts = ()=>{
-		this.setState({
-			page: this.state.page+1
-		},()=>{
-			this.props.getPopularPosts(this.state.page);
-		})
-		
-	}
-	
-	renderItem = ({item})=> {
-		
-			return (<SinglePostComponent post= {item} />);
+	loadMorePosts = async ()=>{
+		await this.props.incrementPopularPage();
+		if(this.props.popular.pages>=this.props.popular.page){
+			this.props.getPopularPosts(this.props.popular.page);
 		}
+	}
+	_keyExtractor(post, index) {
+		return post;
+	}
+	renderItem = ({item})=> {
+		return (<SinglePostComponent post= {this.props.postsHash[item]} />);
+	}
+	renderFooter = ()=>{
+		return(
+			
+			this.props.popular.loading?<ActivityIndicator size="large" color="black"/>:<View/>
+		);
+	}
+	renderHeader = ()=>{
+		return(
+			<TouchableOpacity 
+				onPress = {()=>{Actions.searchpost()}}
+				style={{margin:7,paddingLeft:7,borderColor:"black",height:50,borderWidth:1,justifyContent:"center",borderRadius:5}}>
+				
+				<Text style={{fontSize:18}}>{"Search Posts"}</Text>
+			</TouchableOpacity>
+		);
+	}
 	render=()=>{
 		if(this.props.popular){
 			return (
@@ -52,25 +51,25 @@ class PopularPostsComponent extends React.Component {
 					<FlatList
 						data={this.props.popular.posts}
 						renderItem={this.renderItem}
-						keyExtractor={(item)=>item._id}
+						keyExtractor={this._keyExtractor}
 						onEndReached={this.loadMorePosts}
 						onEndReachedThreshold={0.5}
+						ListHeaderComponent = {this.renderHeader}
+						ListFooterComponent = {this.renderFooter}
 						onRefresh={this.refreshPosts}
-						refreshing={this.state.refreshing}
+						refreshing={this.props.popular.refreshing}
 						style={{flex:1}}
 					/>
 				</View>
 			);
 		}
-		return(
-			<Text>Not there</Text>
-			
-		);
+		
 	}
 }
 const mapStateToProps=(state)=>{
 	return {
-		popular: state.posts.popular
+		popular: state.posts.popular,
+		postsHash:state.posts.postsHash
 	};
 }
-export default connect(mapStateToProps,{getPopularPosts,incrementPopularPostsPage})(PopularPostsComponent);
+export default connect(mapStateToProps,{getPopularPosts,refreshPopularPage,incrementPopularPage})(PopularPostsComponent);

@@ -57,8 +57,6 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 			newChatsIds = [chatRoomId,...state.all.chats];
 		}
 		
-		console.log(chatRoomLastMessage);
-		console.log(newChatRoomHash);
 		return {...state,all:{...state.all,chats:newChatsIds},chatsHash:newChatRoomHash};
 	case CHAT_RECEIVED:
 		

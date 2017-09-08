@@ -2,66 +2,39 @@
 import React from "react";
 import { View, Text,Button,FlatList,ActivityIndicator } from "react-native";
 import {connect} from 'react-redux';
-import {getAllUsers} from '../../actions/users';
+import {getAllUsers,refreshAllPage,incrementAllPage} from '../../actions/users';
 import {Actions} from 'react-native-router-flux';
-
 import SingleUserComponent from './SingleUserComponent';
 class AllUsersComponent extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			page: 1
-		};
 	}
-    
-	componentWillMount=()=>{
-		
-		this.setState({
-			refreshing: true
-		});
-		this.props.getAllUsers(1);            
-		this.setState({
-			refreshing: false
-		});
-		
+    refreshUsers = async ()=>{
+		await this.props.refreshAllPage();
+		this.props.getAllUsers(this.props.all.page);
 	}
-	refreshUsers = ()=>{
-		this.setState({
-			refreshing: true,
-			page: 1
-		},()=>{
-			this.props.getAllUsers(this.state.page);
-		});
-		
-		
-		this.setState({
-			refreshing: false
-		});
+	componentWillMount = ()=>{
+		this.props.getAllUsers(this.props.all.page);
 	}
-	loadMoreUsers = ()=>{
-		if(this.props.all.pages>=(this.state.page+1)){
-			this.setState({
-				page: this.state.page+1,
-				refreshing: true
-			},()=>{
-				this.props.getAllUsers(this.state.page);
-			});
-			this.setState({
-				refreshing: false
-			});
+	loadMoreUsers = async ()=>{
+		await this.props.incrementAllPage();
+		
+		if(this.props.all.pages>=this.props.all.page){
+			this.props.getAllUsers(this.props.all.page);
 		}
 	}
-	renderFooter () {
-		return (
-			<ActivityIndicator
-				animating={this.state.refreshing}
-				style={ {height: 80}}
-				size="large" color="white"
-			/>
-		);
+	_keyExtractor(user, index) {
+		return user;
 	}
 	renderItem = ({item})=> {
-		return (<SingleUserComponent user= {item} />);
+		return (<SingleUserComponent user= {this.props.usersHash[item]} />);
+	}
+	renderFooter = ()=>{
+			return(
+				
+				this.props.all.loading?<ActivityIndicator size="large" color="black"/>:<View/>
+				
+			);
 	}
 	render=()=>{
 		
@@ -69,14 +42,14 @@ class AllUsersComponent extends React.Component {
 			return (
 				<View style={{flex:1}}>
 					<FlatList
-						data={this.props.all.users}
-						renderItem={this.renderItem}
-						keyExtractor={(item)=>item._id}
-						onEndReached={this.loadMoreUsers}
-						onEndReachedThreshold={10}
-						renderFooter={this.renderFooter}
-						onRefresh={this.refreshUsers}
-						refreshing={this.state.refreshing}
+					data={this.props.all.users}
+					renderItem={this.renderItem}
+					keyExtractor={this._keyExtractor}
+					onEndReached={this.loadMoreUsers}
+					onEndReachedThreshold={200}
+					onRefresh={this.refreshUsers}
+					ListFooterComponent = {this.renderFooter}
+					refreshing={this.props.all.refreshing}
 					/>
 				
 				
@@ -91,7 +64,8 @@ class AllUsersComponent extends React.Component {
 }
 const mapStateToProps=(state)=>{
 	return {
-		all: state.users.all
+		all: state.users.all,
+		usersHash:state.users.usersHash
 	};
 };
-export default connect(mapStateToProps,{getAllUsers})(AllUsersComponent);
+export default connect(mapStateToProps,{getAllUsers,refreshAllPage,incrementAllPage})(AllUsersComponent);

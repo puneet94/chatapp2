@@ -1,8 +1,39 @@
 import axios from 'axios';
-import {URL,USER_DETAILS_RECEIVED,USER_POSTS_RECEIVED,USER_DETAILS_ERROR,SET_AUTH_TOKEN,REMOVE_USER_DETAILS,USER_LOCATION_RECEIVED,USER_LOCATION_ERROR,OTHER_USER_RECEIVED,USER_UNFOLLOWED,USER_FOLLOWED} from './constants';
+import {URL,USER_DETAILS_RECEIVED,USER_SET_DETAILS,USER_POSTS_RECEIVED,USER_DETAILS_ERROR,SET_AUTH_TOKEN,REMOVE_USER_DETAILS,USER_LOCATION_RECEIVED,USER_LOCATION_ERROR,OTHER_USER_RECEIVED,USER_UNFOLLOWED,USER_FOLLOWED} from './constants';
 const USER_URL = `${URL}nativeAuth/userDetails`;
 import {Actions} from 'react-native-router-flux';
 import {getLocation} from "../services/common.js";
+import {uploadImage} from "../services/messages";
+export const userSetDetails = (payload)=>{
+    return  (dispatch) =>{
+        dispatch({type:USER_SET_DETAILS,payload});
+    }
+};
+export const uploadUserImage = (image)=>{
+    return async (dispatch,getState)=>{
+        const {jwt_token} = getState().auth;
+        let response = await uploadImage(image,jwt_token);
+        dispatch({type:USER_SET_DETAILS, payload:{picture:response.data.image}});
+    }
+};
+export const userSaveDetails = (user)=>{
+    return async (dispatch,getState)=>{
+        const {jwt_token} = getState().auth;
+        try {
+            
+            await axios.post(`${URL}user/update`,{
+                user
+            },{
+                headers:{
+                    "Authorization": `Bearer ${jwt_token}`
+                }
+            });
+            dispatch({type:USER_SAVE_DETAILS})
+        } catch (error) {
+            
+        }
+    }
+}
 export const fetchUserDetails = (jwt_token)=>{
     return async (dispatch,getState)=>{
         try{

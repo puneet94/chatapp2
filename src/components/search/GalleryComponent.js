@@ -50,24 +50,20 @@ class GalleryComponent extends Component{
     render = () => {
         if( this.props.createPost.randomImagesLoading){
             return (
-                <View>
-                <Text>{
-                    "Loading"
-                }</Text>
+                <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                    <Text>{"Loading..."}</Text>
                 </View>
-            )
+            );
         }else{        
             return (
-                    <FlatList 
-                    style={styles.containerStyle} 
-                    data = {this.state.images} 
-                    renderItem = {this._renderItem}
-                    keyExtractor = {this._keyExtractor}
-                    numColumns = {2}
-                />
-                
-                
-                    
+                <View style={styles.containerStyle} >
+                    <FlatList         
+                        data = {this.state.images} 
+                        renderItem = {this._renderItem}
+                        keyExtractor = {this._keyExtractor}
+                        numColumns = {2}
+                    />    
+                </View>  
             );
         }
     }
@@ -75,13 +71,12 @@ class GalleryComponent extends Component{
 const styles = StyleSheet.create({
     containerStyle: {
         flex: 1,
-        width: windowSize
-        
+        width: windowSize,
+        justifyContent: "center"
     },
     singleImage: {
          width: windowSize/2.2,
          height: windowSize/2.2,
-         flexWrap: 'wrap', 
          margin: 5
     }
 });

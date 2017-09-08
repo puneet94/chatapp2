@@ -251,7 +251,9 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
-
+*.exe
+*.keystore
+*.apk
 # Windows Installer files
 *.cab
 *.msi

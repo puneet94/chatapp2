@@ -19,9 +19,7 @@ export default class SinglePostComponent extends Component {
 								super(props);
 				}
 				shouldComponentUpdate = (nextProps,nextState) => {
-						if(nextProps.post.views != this.props.post.views || nextProps.post.likes.length != this.props.post.likes.length){
-								console.log("updated");
-								console.log(this.props.post.content);
+						if(nextProps.post.likes != this.props.post.likes){
 								return true;
 						}
 						return false;
@@ -59,7 +57,7 @@ export default class SinglePostComponent extends Component {
 																								<View rkCardImgOverlay rkCardContent style={styles.overlay}>
 																												<RkText
 																																rkType='header2 inverseColor blackShadow'
-																																numberOfLines={1}
+																																numberOfLines={2}
 																																style={{
 																																textShadowColor: "black",
 																																textShadowOffset: {
@@ -73,7 +71,7 @@ export default class SinglePostComponent extends Component {
 																																<SocialBar
 																																				rkType='leftAligned'
 																																				views={post.views}
-																																				likes={post.likes.length}
+																																				likes={post.likes}
 																																				loc={post.loc}/>
 																												</View >
 																								</View>
@@ -155,19 +153,19 @@ const styles = RkStyleSheet.create(theme => ({
 /*
 const styles = StyleSheet.create({
 	card: {
-    	marginVertical: 8,
+		marginVertical: 8,
   	},
 	postContainer: {
 		flex: 1,
 		backgroundColor: "#fff",
 		justifyContent: "flex-start",
-    	alignItems: "stretch"
+		alignItems: "stretch"
 	},
 	userDetails:{
 		flexDirection: "row",
 		flex: 1,
 		justifyContent: "flex-start",
-    	alignItems: "flex-start"
+		alignItems: "flex-start"
 	},
 	postUserImage:{
 		flex: 1.7,
@@ -198,7 +196,7 @@ const styles = StyleSheet.create({
 		flex:1,
 		height: 300,
 
-    width: null
+	width: null
 	},postInterest:{
 		flex: 1,
 		flexDirection: "row"

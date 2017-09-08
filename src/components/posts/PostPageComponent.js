@@ -12,7 +12,7 @@ import {
 const moment = require("moment");
 import {Avatar} from "../../components/avatar";
 import {SocialBar} from "../../components/socialBar";
-import {submitLike,deleteLike,deletePost} from "../../actions/posts";
+import {submitLike,deleteLike,deletePost,submitViews} from "../../actions/posts";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 class PostPageComponent extends Component {
 	constructor(props){
@@ -20,7 +20,6 @@ class PostPageComponent extends Component {
 		this.state = {
 			likes: props.post.likes.length?props.post.likes.length:1
 		}
-		
 	}
 	showDeleteAlert= ()=>{
 		Alert.alert(
@@ -64,9 +63,8 @@ class PostPageComponent extends Component {
 		let renderDelete = () => {
 			if(isUser){
 				return (
-					 <TouchableOpacity onPress={()=>{showDeleteAlert()}}>
-					  <Text>Delete</Text>
-					</TouchableOpacity>
+					 <Button title="Delete" onPress={()=>{showDeleteAlert()}}/>
+				
 				  );
 			}else{
 				return (<View></View>);
@@ -86,11 +84,6 @@ class PostPageComponent extends Component {
 	
 	submitLike = ()=>{
 		this.props.submitLike(this.props.post._id);
-		this.setState((prevState)=>{
-			return {
-				likes: prevState.likes+1
-			};
-		});
 	}
 	checkLike = ()=>{
 		
@@ -102,14 +95,12 @@ class PostPageComponent extends Component {
 		}
 	}
 	deleteLike = ()=>{
-		this.props.submitLike(this.props.post._id);
-		this.setState((prevState)=>{
-			return {
-				likes: prevState.likes-1
-			};
-		});
+		
+		this.props.deleteLike(this.props.post._id);
 	}
-	
+	componentDidMount = ()=>{
+		this.props.submitViews(this.props.post._id);
+	}
 	render=()=>{
 		const post  = this.props.post;
 		return (
@@ -134,7 +125,7 @@ class PostPageComponent extends Component {
 							</View>
 						</View>
 						<View rkCardFooter>
-							<SocialBar likes={this.state.likes} views = {post.views} time={post.time} updateLikes={this.checkLike()?this.deleteLike:this.submitLike} liked={this.checkLike()} loc={post.loc}/>
+							<SocialBar likes={this.props.post.likes} views = {post.views} time={post.time} updateLikes={this.checkLike()?this.deleteLike:this.submitLike} liked={this.checkLike()} loc={post.loc}/>
 						</View>
 					</RkCard>
 				</ScrollView>
@@ -149,7 +140,7 @@ const mapStateToProps = (state)=>{
 		user: state.user.user
 	};
 };
-export default connect(mapStateToProps,{submitLike,deleteLike,deletePost})(PostPageComponent);
+export default connect(mapStateToProps,{submitLike,deleteLike,deletePost,submitViews})(PostPageComponent);
 let styles = RkStyleSheet.create(theme => ({
 	root: {
 		backgroundColor: theme.colors.screen.base

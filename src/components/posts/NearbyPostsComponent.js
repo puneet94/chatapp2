@@ -1,8 +1,8 @@
 "use strict";
 import React from "react";
-import { View, Text,Button,FlatList } from "react-native";
+import { View, Text,Button,FlatList,ActivityIndicator } from "react-native";
 import {connect} from "react-redux";
-import {getNearbyPosts,incrementNearbyPostsPage} from "../../actions/posts";
+import {getNearbyPosts,refreshNearbyPage,incrementNearbyPage} from "../../actions/posts";
 import {Actions} from "react-native-router-flux";
 
 import SinglePostComponent from "./SinglePostComponent";
@@ -10,58 +10,34 @@ import SinglePostComponent from "./SinglePostComponent";
 class NearbyPostsComponent extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			page: 1
-		};
 	}
     
-	componentWillMount=()=>{
-		this.setState({
-			refreshing: true
-		});
-		this.props.getNearbyPosts(1);            
-		this.setState({
-			refreshing: false
-		});
-		
+	refreshPosts = async ()=>{
+		await this.props.refreshNearbyPage();
+		this.props.getNearbyPosts(this.props.nearby.page);
 	}
-	refreshPosts = ()=>{
-
-		
-
-
-
-		this.setState({
-			refreshing: true,
-			page: 1
-		},()=>{
-			this.props.getNearbyPosts(1);
-		});
-		
-		
-		this.setState({
-			refreshing: false
-		});
+	componentWillMount = ()=>{
+		this.props.getNearbyPosts(this.props.nearby.page);
 	}
-	loadMorePosts = ()=>{
-		if(this.props.nearby.pages>=(this.state.page+1)){
-			this.setState({
-				page: this.state.page+1
-			},()=>{
-				this.props.getNearbyPosts(this.state.page);
-			});
+	loadMorePosts = async ()=>{
+		await this.props.incrementNearbyPage();
+		if(this.props.nearby.pages>=this.props.nearby.page){
+			this.props.getNearbyPosts(this.props.nearby.page);
 		}
-		
 	}
 	_keyExtractor(post, index) {
-		return post._id;
+		return post;
 	}
-	
 	renderItem = ({item})=> {
-			return (<SinglePostComponent post= {item} location={this.props.location}/>);
+		return (<SinglePostComponent location={this.props.location} post= {this.props.postsHash[item]} />);
+	}
+	renderFooter = ()=>{
+		return(
+			
+			this.props.nearby.loading?<ActivityIndicator size="large" color="black"/>:<View/>
+		);
 	}
 	render=()=>{
-		
 		if(this.props.nearby&&!this.props.location_error){
 			return (
 				<View style={{flex:1}}>
@@ -72,7 +48,8 @@ class NearbyPostsComponent extends React.Component {
 						onEndReached={this.loadMorePosts}
 						onEndReachedThreshold={0.1}
 						onRefresh={this.refreshPosts}
-						refreshing={this.state.refreshing}
+						refreshing={this.props.nearby.refreshing}
+						ListFooterComponent = {this.renderFooter}
 						style={{flex:1}}
 						initialNumToRender={10}
 					/>
@@ -80,8 +57,9 @@ class NearbyPostsComponent extends React.Component {
 			);
 		}
 		return(
-			<Text>Not there</Text>
-			
+			<View style={{justifyContent:"center",flex:1}}>
+				<Text>Location Details not available.Turn on location and restart the app</Text>	
+			</View>
 		);
 	}
 }
@@ -89,7 +67,8 @@ const mapStateToProps=(state)=>{
 	return {
 		nearby: state.posts.nearby,
 		location: state.user.location,
-		location_error: state.user.user_location_error
+		location_error: state.user.user_location_error,
+		postsHash:state.posts.postsHash
 	};
 };
-export default connect(mapStateToProps,{getNearbyPosts,incrementNearbyPostsPage})(NearbyPostsComponent);
+export default connect(mapStateToProps,{getNearbyPosts,refreshNearbyPage,incrementNearbyPage})(NearbyPostsComponent);

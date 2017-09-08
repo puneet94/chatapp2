@@ -59,6 +59,9 @@ class OtherProfileComponent extends Component {
           <Avatar img={this.otherUser.picture} rkType='big'/>
           <RkText rkType='header2'>{this.otherUser.anonName}</RkText>
         </View>
+        <View style={[styles.header, styles.bordered]}>
+          <RkText rkType='header5'>{this.otherUser.status}</RkText>
+        </View>
         <View style={[styles.userInfo, styles.bordered]}>
           <View style={styles.section}>
             <RkText rkType='header3' style={styles.space}>{this.otherUser.posts.length}</RkText>
@@ -78,7 +81,6 @@ class OtherProfileComponent extends Component {
           <View style={styles.separator}/>
           <RkButton style={styles.button} onPress={()=>this.openChatBox(this.otherUser._id)} rkType='clear link'>MESSAGE</RkButton>
         </View>
-
         <UserPostsComponent userId = {this.otherUser._id}></UserPostsComponent>
       </ScrollView>
     );}else{

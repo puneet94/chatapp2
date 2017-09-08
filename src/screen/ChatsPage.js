@@ -73,19 +73,18 @@ class ChatsPage extends Component {
 			<View style={{flex:1}}>
 				<View style={styles.tabContainer}>
 					<TouchableOpacity style={[styles.singleTab,this.currentTab(1)]} onPress={ () => this.setTab(1) } >
-						<Text style={{color:"white"}}>{"ALL"}</Text>  
+						<Text style={{color:"white"}}>{"CHATS"}</Text>  
 					</TouchableOpacity>
-					<TouchableOpacity style={[styles.singleTab,this.currentTab(2)]} onPress={ () => this.setTab(2) } >
+					{/*<TouchableOpacity style={[styles.singleTab,this.currentTab(2)]} onPress={ () => this.setTab(2) } >
 						<Text style={{color:"white"}}>{"FAVORITES"}</Text> 
-					</TouchableOpacity>
-					
+					</TouchableOpacity>*/}
 				</View>
 				<View style={styles.singleTabContainer}>
 					{
 						this.renderTabs()
 					}
 				</View>
-				<View style={styles.fabTouchableOpacity}></View>
+				{/*<View style={styles.fabTouchableOpacity}></View>*/}
 			</View>
 		);
 	}

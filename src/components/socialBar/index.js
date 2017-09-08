@@ -23,7 +23,7 @@ export class SocialBar extends RkComponent {
 	constructor(props) {
 		super(props);
 
-		this.likes = this.props.likes;
+		this.likes = this.props.likes.length;
 		
 		this.views = this.props.views;
 		this.state = {
@@ -53,7 +53,7 @@ export class SocialBar extends RkComponent {
 					</View>}
 				</View>
 				<View style={section}>
-					<RkText rkType=" hintColor" style={icon}><Entypo style={{textShadowColor: "black",textShadowOffset: {width: 2, height: 2},textShadowRadius: 3}} name="eye" size={22} /></RkText>
+					<RkText rkType=" hintColor" style={icon}><Entypo  name="eye" size={22} /></RkText>
 					<RkText rkType="primary4 hintColor" style={label}>{views}</RkText>
 				</View>
 				

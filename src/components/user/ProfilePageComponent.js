@@ -2,7 +2,8 @@ import React,{Component} from 'react';
 import {
   View,
   ScrollView,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import {
   RkText,
@@ -22,14 +23,19 @@ export class ProfilePageComponent extends Component {
   render() {
 	const user = this.props.user;
     return (
-      <ScrollView style={styles.root} stickyHeaderIndices={[0]}>
-        <View style={{height:50,backgroundColor:"blue",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
-        <Text style={{color:"white"}}>{"Me"}</Text>
-        <Ionicons name="md-settings" size={24} color="white"/>
-      </View>
+      <View>
+        <View style={{height:50,backgroundColor:"blue",flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
+          <View style={{flex:1}}>
+            <Text style={{color:"white",fontSize:22,paddingLeft:10}}>{user.anonName}</Text>
+          </View>
+          <TouchableOpacity style={{flex:1,alignItems:"flex-end",paddingRight:10}} onPress={()=>Actions.profilesettings()}>
+            <Ionicons name="md-settings" size={28} color="white"/>
+          </TouchableOpacity>
+        </View>
+      <ScrollView style={styles.root} >
         <View style={[styles.header, styles.bordered]}>
           <Avatar img={user.picture} rkType='big'/>
-          <RkText rkType='header2'>{user.anonName}</RkText>
+          <RkText rkType='header5'>{user.status}</RkText>
         </View>
         <View style={[styles.userInfo, styles.bordered]}>
           <View style={styles.section}>
@@ -46,8 +52,8 @@ export class ProfilePageComponent extends Component {
           </View>
         </View>
         <UserPostsComponent userId = {user._id}></UserPostsComponent>
-        
       </ScrollView>
+      </View>
     )
   }
 }

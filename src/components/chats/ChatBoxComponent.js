@@ -88,6 +88,12 @@ class ChatBoxComponent extends Component {
 			'Setting a timer'
 		];
 	}
+	componentWillMount = ()=>{
+		if(this.props.userId==this.props.currentUserId){
+			Actions.pop();
+			return;
+		}
+	}
 	
 	static navigationOptions = ({navigation}) => {
 		
@@ -161,8 +167,7 @@ class ChatBoxComponent extends Component {
 				},()=>{this._scroll(true);});
 			});
 	}
-	componentWillMount = async() => {
-	}
+	
 	componentDidMount = async ()=>{
 		try{
 			let response = await fetchChatRoom(this.props.userId, this.props.auth.jwt_token);
@@ -322,7 +327,7 @@ class ChatBoxComponent extends Component {
 	}
 }
 const mapStateToProps = (state) => {
-	return {auth: state.auth};
+	return {auth: state.auth,currentUserId: state.user.user._id};
 };
 export default connect(mapStateToProps, {updateChatRoom,getAllChats,chatTransferred,createChatRoom})(ChatBoxComponent);
 
