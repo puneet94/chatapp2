@@ -13,7 +13,6 @@ import AuthComponent from "./src/components/AuthComponent.js";
 import GroupChatBoxComponent from "./src/components/chats/GroupChatBoxComponent.js";
 import ChatBoxComponent from "./src/components/chats/ChatBoxComponent.js";
 
-
 import SearchPostsComponent from "./src/components/search/SearchPostsComponent.js";
 import SearchProfileComponent from "./src/components/search/SearchProfileComponent.js";
 
@@ -31,7 +30,7 @@ export default class App extends Component {
 		return (
 			<Provider store={store}>
 				<Router style={styles.container}>
-					<Scene key="root"  navigationBarStyle={{backgroundColor: '#1919ff'}}  titleStyle={{color : "#FFF"}}>
+					<Scene key="root"  navigationBarStyle={{backgroundColor: 'rgb(50,25,110)'}}  titleStyle={{color : "#FFF"}}>
 						<Scene key="logo" component={LogoComponent} hideNavBar ={true} />
 						<Scene key="auth" component={AuthComponent} hideNavBar ={true} />
 						<Scene key="tabs" component={TabsComponent} hideNavBar ={true}  type={ActionConst.RESET} />

@@ -43,7 +43,10 @@ class SearchPostsComponent extends React.Component {
 				placeholder ="Search Posts with tags. Eg: football"			
 				onChange={this.onTextChange}
 				value={this.props.search.interest}			
-				underlineColorAndroid = 'transparent'>
+				underlineColorAndroid = 'transparent'
+				autoFocus={true}
+				>
+				
 			</TextInput>
 		);
 	}

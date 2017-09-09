@@ -3,11 +3,12 @@ import {
   ScrollView,
   View,
   StyleSheet,
-  Button,
+  TouchableOpacity,
   Picker,
   ActivityIndicator,
   Slider,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 import {
   RkText,
@@ -16,7 +17,6 @@ import {
   RkTheme,
   RkStyleSheet
 } from 'react-native-ui-kitten';
-import times from "lodash/times";
 import {userSetDetails,uploadUserImage,userSaveDetails} from "../../actions/user";
 import {Avatar} from '../../components/avatar';
 import {connect} from "react-redux";
@@ -24,7 +24,7 @@ import PhotoUpload from "../search/PhotoUploadComponent";
 
 class ProfileSettingsComponent extends React.Component {
   static navigationOptions = {
-    title: 'Profile Settings'.toUpperCase()
+    title: 'Edit Profile'
   };
   constructor(props) {
     super(props);
@@ -38,6 +38,7 @@ class ProfileSettingsComponent extends React.Component {
   changeUserPicture = async (avatar)=>{
     
     await this.props.uploadUserImage(avatar);
+    this.props.userSetDetails({picture: this.props.user.picture})
     //await this.props.userSetDetails({picture: avatar});
     this.setState({
       pictureLoading: false
@@ -88,46 +89,59 @@ class ProfileSettingsComponent extends React.Component {
                 {this.state.pictureLoading?<ActivityIndicator size="large" color="black"/>:
                 <Avatar img={userPicture} rkType='big'/>}
  						</PhotoUpload>	
-            
           </View>
           <View style={styles.section}>
             <View style={[styles.row, styles.heading]}>
               <RkText rkType='header6 primary'>INFO</RkText>
             </View>
             <View style={styles.row}>
-              <RkTextInput label='Anonymous Name'
-                           value={user.anonName}
-                           rkType='right clear'
-                           onChangeText={(text) => this.props.userSetDetails({anonName: text})}/>
+              <RkText style={{flex:1,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Name</RkText>
+                <TextInput 
+                style={{flex:1,textAlign: "right",alignSelf:"flex-end",fontWeight:'500',fontSize:18}}
+                  onChangeText={(text) => this.props.userSetDetails({anonName: text})}
+                  value={user.anonName}
+                  underlineColorAndroid = 'transparent'
+                  maxLength = {15}  
+              />
+            </View>
+            <View style={styles.row}>
+              <RkText style={{flex:1,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Age</RkText>
+              <TextInput 
+              style={{flex:1,textAlign:"right",fontWeight:"500"}}
+                keyboardType = 'numeric'
+                onChangeText = {(text)=> this.props.userSetDetails({age:text})}
+                value = {user.age+""}
+                maxLength = {2}  
+                underlineColorAndroid = 'transparent'
+             />
             </View>
             
             <View style={styles.row}>
-              <RkText style={{flex:1}} rkType='header6  clear'>Gender</RkText>
+              <RkText style={{flex:1,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Gender</RkText>
               <Picker 
-                style={{flex:0.5,justifyContent:"flex-end"}}
+                style={{flex:0.5,justifyContent:"flex-end",alignSelf:"flex-end",paddingRight:0}}
                 selectedValue={user.gender}
                 onValueChange={(itemValue, itemIndex) => this.props.userSetDetails({gender: itemValue})}>
                 <Picker.Item label="Other" value="Other" />
                 <Picker.Item label="Male" value="Male" />
                 <Picker.Item label="Female" value="Female" />
-                
               </Picker>
-
             </View>
-            
             <View style={styles.row}>
-              <RkText style={{flex:1,color:"#4c4c4c"}} rkType='header6  clear'>Age</RkText>
-              <TextInput 
-              style={{flex:0.2,justifyContent:"flex-end"}}
-                keyboardType = 'numeric'
-                onChangeText = {(text)=> this.props.userSetDetails({age:text})}
-                value = {user.age+""}
-                maxLength = {2}  
-             />
+              <RkText style={{flex:1,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Gossip ID</RkText>
+              <TouchableOpacity style={{paddingVertical:12,flex:1}} onPress={()=>{Alert.alert(
+					'Gossip ID',
+          'This ID is unique and cannot be changed. Send it to your friends and start chatting on gossip.',
+          [
+    {text: 'Ok', onPress: () => console.log('Ask me later pressed')}
+  ],
+					{ cancelable: true }
+				  );}}>
+              <RkText 
+              style={{flex:1,textAlign:"right",fontWeight:"400",fontSize:16,color:'rgb(218,218,218)'}}>
+             {user.unique_id}</RkText>
+             </TouchableOpacity>
             </View>
-
-            
-
           </View>
 
           <View style={styles.section}>
@@ -144,7 +158,6 @@ class ProfileSettingsComponent extends React.Component {
 							
 				 	/>
           
-          <Button rkType='large' title={this.state.saveLoading?"Loading":"Save"} onPress={()=>{this.userSaveDetails()}} style={styles.button} text='SAVE'/>
         </RkAvoidKeyboard>
       </ScrollView>
     )
@@ -169,7 +182,9 @@ let styles = RkStyleSheet.create(theme => ({
     marginVertical: 20
   },
   statusTextInput:{
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    fontSize: 18,
+    fontWeight: '500'
   },
   heading: {
     paddingBottom: 12.5
@@ -183,6 +198,7 @@ let styles = RkStyleSheet.create(theme => ({
   },
   button: {
     marginHorizontal: 16,
-    marginBottom: 32
+    marginBottom: 32,
+    backgroundColor: 'rgb(50,25,110)'
   }
 }));

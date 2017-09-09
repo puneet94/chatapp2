@@ -5,8 +5,20 @@ import {Actions} from 'react-native-router-flux';
 import {getLocation} from "../services/common.js";
 import {uploadImage} from "../services/messages";
 export const userSetDetails = (payload)=>{
-    return  (dispatch) =>{
+    return async (dispatch,getState) =>{
         dispatch({type:USER_SET_DETAILS,payload});
+        const {jwt_token} = getState().auth;
+        try {
+            await axios.post(`${URL}user/update`,{
+                user: payload
+            },{
+                headers:{
+                    "Authorization": `Bearer ${jwt_token}`
+                }
+            });
+            dispatch({type:USER_SAVE_DETAILS})
+        } catch (error) {   
+        }
     }
 };
 export const uploadUserImage = (image)=>{
@@ -20,7 +32,6 @@ export const userSaveDetails = (user)=>{
     return async (dispatch,getState)=>{
         const {jwt_token} = getState().auth;
         try {
-            
             await axios.post(`${URL}user/update`,{
                 user
             },{
@@ -29,8 +40,7 @@ export const userSaveDetails = (user)=>{
                 }
             });
             dispatch({type:USER_SAVE_DETAILS})
-        } catch (error) {
-            
+        } catch (error) {   
         }
     }
 }

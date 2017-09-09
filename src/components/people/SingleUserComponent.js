@@ -22,7 +22,7 @@ export default class  SingleUserComponent extends Component{
 			</View>
 			<View style={styles.userDetailsContainer}>
 				<Text style={styles.userName}>
-					{user.anonName} {  ` (${user.gender?user.gender[0]||"O":"O"})`}
+					{user.anonName} 
 				</Text>
 				<Text style={styles.userStatus}>
 					{user.status}

@@ -92,6 +92,8 @@ export const getSearchPosts = (interest) => {
 						}
 
 				} catch (error) {
+					console.log("location error");
+					console.log(error);
 						dispatch({type: USER_LOCATION_ERROR, payload: error});
 				}
 		};
@@ -140,10 +142,14 @@ export const getNearbyPosts = (page) => {
 				dispatch({type: NEARBY_POSTS_LOADING});
 				try {
 						const {jwt_token} = getState().auth;
-						if (!getState().user.user_location_error) {
+						if (getState().user.location) {
 								location = getState().user.location;
+								console.log("location if");
+								console.log(location);
 						} else {
 								location = await getLocation();
+								console.log("location else");
+								console.log(location);
 						}
 						const {latitude, longitude} = location.coords;
 						let response = await axios.get(`${URL}post/getPosts`, {
@@ -221,7 +227,6 @@ export const submitViews = (postId) => {
 		return async(dispatch, getState) => {
 				const {jwt_token} = getState().auth;
 				try {
-
 						let response = await axios.post(`${URL}post/views/${postId}`, {}, {
 								headers: {
 										"Authorization": `Bearer ${jwt_token}`

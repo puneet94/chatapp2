@@ -50,7 +50,7 @@ class ChatsPage extends Component {
 	currentTab=(tabPage)=>{
 		if(tabPage === this.state.currentTab){
 			return {
-				backgroundColor: "green"
+				backgroundColor: "rgb(50,25,110)"
 			};
 		}else{
 			return {

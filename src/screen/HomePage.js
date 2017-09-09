@@ -94,7 +94,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		alignSelf: "stretch",
-		backgroundColor: "#1919ff",
+		//rgb(59,89,152)
+		//#1919ff
+		backgroundColor: "rgb(50,25,110)",
 		justifyContent: "center"
 	},
 	tabText:{
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		borderRadius: 25,
-		backgroundColor: "#ee6e73",
+		backgroundColor: "rgb(50,25,110)",
 		position: "absolute",
 		bottom: 10,
 		right: 10,

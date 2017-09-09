@@ -24,7 +24,7 @@ export class ProfilePageComponent extends Component {
 	const user = this.props.user;
     return (
       <View>
-        <View style={{height:50,backgroundColor:"blue",flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
+        <View style={{height:50,backgroundColor:"rgb(50,25,110)",flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
           <View style={{flex:1}}>
             <Text style={{color:"white",fontSize:22,paddingLeft:10}}>{user.anonName}</Text>
           </View>

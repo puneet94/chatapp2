@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		alignSelf: "stretch",
-		backgroundColor: "blue",
+		backgroundColor: "rgb(50,25,110)",
 		justifyContent: "center",
 		
 		padding: 12
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		borderRadius: 25,
-		backgroundColor: "#ee6e73",
+		backgroundColor: "rgb(50,25,110)",
 		position: "absolute",
 		bottom: 10,
 		right: 10,

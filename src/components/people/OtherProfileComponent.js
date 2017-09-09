@@ -7,6 +7,8 @@ import {
   RkText,
   RkButton, RkStyleSheet
 } from 'react-native-ui-kitten';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+//
 import {Avatar} from '../../components/avatar';
 import formatNumber from '../../utils/textUtils';
 import {Actions} from "react-native-router-flux";
@@ -39,7 +41,6 @@ class OtherProfileComponent extends Component {
 	  }
   }
   submitUserFollow = ()=>{
-	  
 	  this.props.submitUserFollow(this.props.otherUser._id);
   }
   deleteUserFollow = ()=>{
@@ -49,15 +50,27 @@ class OtherProfileComponent extends Component {
   componentWillUnmount=()=>{
 	this.props.removeUserDetails();
   }
-  render() {
-	  
+  render=()=> {
 	this.otherUser = this.props.otherUser;
 	if(this.props.otherUser){
+    const sameUser = (this.props.otherUser._id != this.props.currentUser._id);
     return (
       <ScrollView style={styles.root}>
         <View style={[styles.header, styles.bordered]}>
           <Avatar img={this.otherUser.picture} rkType='big'/>
-          <RkText rkType='header2'>{this.otherUser.anonName}</RkText>
+          <View style={{flexDirection:"row",justifyContent:"center"}}>
+            <RkText rkType='header2' style={{marginRight:10}}>{this.otherUser.anonName}</RkText>
+            {this.otherUser.gender=="Male" && <Icon
+              name={'gender-male'}
+              size={30}
+              color={'aqua'}
+            />}
+            {this.otherUser.gender=="Female" && <Icon
+              name={'gender-female'}
+              size={30}
+              color={'pink'}
+            />}
+        </View>
         </View>
         <View style={[styles.header, styles.bordered]}>
           <RkText rkType='header5'>{this.otherUser.status}</RkText>
@@ -76,11 +89,11 @@ class OtherProfileComponent extends Component {
             <RkText rkType='secondary1 hintColor'>Following</RkText>
           </View>
         </View>
-        <View style={styles.buttons}>
+        {sameUser?<View style={styles.buttons}>
 			{!this.checkFollowing()?<RkButton style={styles.button} onPress={this.submitUserFollow} rkType='clear link'>FOLLOW</RkButton>:<RkButton style={styles.button} onPress={this.deleteUserFollow} rkType='clear link'>FOLLOWED</RkButton>}
           <View style={styles.separator}/>
           <RkButton style={styles.button} onPress={()=>this.openChatBox(this.otherUser._id)} rkType='clear link'>MESSAGE</RkButton>
-        </View>
+        </View>:<View/>}
         <UserPostsComponent userId = {this.otherUser._id}></UserPostsComponent>
       </ScrollView>
     );}else{
