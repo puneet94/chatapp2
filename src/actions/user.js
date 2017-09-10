@@ -63,7 +63,6 @@ export const fetchUserDetails = (jwt_token)=>{
     }
 }
 export const fetchUserLocationDetails = ()=>{
-    
     return async (dispatch)=>{
         try{
             let location = await getLocation();
@@ -74,7 +73,6 @@ export const fetchUserLocationDetails = ()=>{
         }       
     }
 }
-
 export const submitUserFollow = (userId)=>{
     return async (dispatch,getState)=>{
         const {jwt_token} = getState().auth;

@@ -1,4 +1,4 @@
-package com.gossip;
+package com.gossip.confession;
 
 import com.facebook.react.ReactActivity;
 

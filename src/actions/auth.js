@@ -1,6 +1,6 @@
 import axios from "axios";
-import {DEVICE_AUTH_URL,SET_AUTH_TOKEN,JWT_TOKEN,URL,FACEBOOK_LOGIN_FAIL,REMOVE_AUTH_TOKEN,ERROR_AUTH_TOKEN} from "./constants";
-import {fetchUserDetails} from "./user";
+import {DEVICE_AUTH_URL,USER_DETAILS_RECEIVED,SET_AUTH_TOKEN,JWT_TOKEN,URL,FACEBOOK_LOGIN_FAIL,REMOVE_AUTH_TOKEN,ERROR_AUTH_TOKEN} from "./constants";
+
 import { AsyncStorage,Alert } from "react-native";
 import {Actions} from "react-native-router-flux";
 var DeviceInfo = require("react-native-device-info");
@@ -11,11 +11,12 @@ export const login = ()=>{
             const profile = {
                 device: deviceId
             }
-            
             let response = await axios.post(DEVICE_AUTH_URL,{profile});
-            
             let stored_item = await AsyncStorage.setItem(JWT_TOKEN,response.data.token);
             dispatch({type:SET_AUTH_TOKEN,payload: response.data.token});
+            dispatch({type:USER_DETAILS_RECEIVED,payload: response.data});
+           // fetchUserLocationDetails()();
+           // await fetchUserDetails()();
             Actions.tabs();
         } catch (error) {
             console.log("error in login");

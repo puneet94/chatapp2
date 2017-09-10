@@ -1,4 +1,4 @@
-package com.gossip;
+package com.gossip.confession;
 
 import android.app.Application;
 
@@ -34,7 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ImageResizerPackage(),
             new ImagePickerPackage(),
           new ReactNativePushNotificationPackage(),  
-          new VectorIconsPackage(),
+          new VectorIconsPackage(), 
           new RNDeviceInfo()
           
       );

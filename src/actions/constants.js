@@ -1,8 +1,6 @@
 
-export const URL = "https://petalchat-cloned-imanjithreddy.c9users.io/";
-
-
-
+//export const URL = "https://petalchat-cloned-imanjithreddy.c9users.io/";
+export const URL = "https://wishgossip.herokuapp.com/";
 
 export const USER_SET_DETAILS = "USER_SET_DETAILS";
 export const NEARBY_POSTS_RECEIVED = "NEARBY_POSTS_RECEIVED";

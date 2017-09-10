@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "1092213724163",
-    "firebase_url": "https://gossip-177217.firebaseio.com",
-    "project_id": "gossip-177217",
-    "storage_bucket": "gossip-177217.appspot.com"
+    "project_number": "895971150926",
+    "firebase_url": "https://gossip-e512f.firebaseio.com",
+    "project_id": "gossip-e512f",
+    "storage_bucket": "gossip-e512f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1092213724163:android:139940a473fb2a03",
+        "mobilesdk_app_id": "1:895971150926:android:deec39e01bc5d93d",
         "android_client_info": {
-          "package_name": "com.gossip"
+          "package_name": "com.gossip.confession"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1092213724163-qc52t8glmiilltjsr00cjo7c8dn0psrc.apps.googleusercontent.com",
+          "client_id": "895971150926-4k8uid25euk3sf5jcc5h9vsbl9h04qmo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gossip.confession",
+            "certificate_hash": "0b11f294ff13bd369c9c73b8e7651cb4b3b6ab05"
+          }
+        },
+        {
+          "client_id": "895971150926-g5uibm290vvt0hgv8j0fl9qqrtbklipi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC3HDPNYfObkqCX3PuVpOxjLVNiEKVTugo"
+          "current_key": "AIzaSyAmCW5_ECs_hCcRfCw2xif2nEADiySd9K4"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895971150926-g5uibm290vvt0hgv8j0fl9qqrtbklipi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

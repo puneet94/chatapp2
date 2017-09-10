@@ -3,7 +3,7 @@ import {View,Text,StyleSheet,Image,Dimensions,TouchableOpacity} from "react-nati
 const { width } = Dimensions.get("window");
 import {Actions} from "react-native-router-flux";
 const userPage = (userId)=>{
-	Actions.profile({userId})
+	Actions.profile({userId});
 }
 export default class  SingleUserComponent extends Component{
 		constructor(props){
@@ -31,7 +31,8 @@ export default class  SingleUserComponent extends Component{
 					user.interests.map((interest,index)=><Text key={index}>#{interest}</Text>)}
 				</View>
 			</View>
-		</View></TouchableOpacity>
+		</View>
+		</TouchableOpacity>
 			);}		
 
 	

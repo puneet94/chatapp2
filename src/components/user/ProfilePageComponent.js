@@ -36,6 +36,9 @@ export class ProfilePageComponent extends Component {
         <View style={[styles.header, styles.bordered]}>
           <Avatar img={user.picture} rkType='big'/>
           <RkText rkType='header5'>{user.status}</RkText>
+          {/*<TouchableOpacity style={{flex:1}} onPress={()=>this.props.logout()}>
+            <Text>{"logout"}</Text>
+          </TouchableOpacity>*/}
         </View>
         <View style={[styles.userInfo, styles.bordered]}>
           <View style={styles.section}>
