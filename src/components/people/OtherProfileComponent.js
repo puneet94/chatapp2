@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
 import {
   View,
-  ScrollView,Text
+  ScrollView,Text,
+  ActivityIndicator
 } from 'react-native';
 import {
   RkText,
@@ -13,7 +14,7 @@ import {Avatar} from '../../components/avatar';
 import formatNumber from '../../utils/textUtils';
 import {Actions} from "react-native-router-flux";
 import {connect} from "react-redux";
-import UserPostsComponent from "../../components/posts/UserPostsComponent";
+import OtherUserPostsComponent from "../../components/posts/OtherUserPostsComponent";
 import {getOtherUserDetails,submitUserFollow,deleteUserFollow,removeUserDetails} from "../../actions/user";
 class OtherProfileComponent extends Component {
   openChatBox = (userId)=>{
@@ -94,11 +95,16 @@ class OtherProfileComponent extends Component {
           <View style={styles.separator}/>
           <RkButton style={styles.button} onPress={()=>this.openChatBox(this.otherUser._id)} rkType='clear link'>MESSAGE</RkButton>
         </View>:<View/>}
-        <UserPostsComponent userId = {this.otherUser._id}></UserPostsComponent>
+
+        <OtherUserPostsComponent userId = {this.otherUser._id}></OtherUserPostsComponent>
       </ScrollView>
     );}else{
 		return (<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-        <Text style={{fontSize:20,fontWeight:"600"}}>{"Loading"}</Text>
+        
+
+        <ActivityIndicator size="large" color="black"/>
+
+        
       </View>);
 	}
   }

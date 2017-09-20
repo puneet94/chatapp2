@@ -11,7 +11,6 @@ class NearbyPostsComponent extends React.Component {
 	constructor(props){
 		super(props);
 	}
-    
 	refreshPosts = async ()=>{
 		await this.props.refreshNearbyPage();
 		this.props.getNearbyPosts(this.props.nearby.page);
@@ -20,7 +19,7 @@ class NearbyPostsComponent extends React.Component {
 		this.props.getNearbyPosts(this.props.nearby.page);
 	}
 	loadMorePosts = async ()=>{
-		await this.props.incrementNearbyPage();
+		this.props.incrementNearbyPage();
 		if(this.props.nearby.pages>=this.props.nearby.page){
 			this.props.getNearbyPosts(this.props.nearby.page);
 		}
@@ -33,12 +32,11 @@ class NearbyPostsComponent extends React.Component {
 	}
 	renderFooter = ()=>{
 		return(
-			
 			this.props.nearby.loading?<ActivityIndicator size="large" color="black"/>:<View/>
 		);
 	}
 	render=()=>{
-		if(this.props.nearby&&!this.props.location_error){
+		if(this.props.nearby){
 			return (
 				<View style={{flex:1}}>
 					<FlatList
@@ -57,8 +55,8 @@ class NearbyPostsComponent extends React.Component {
 			);
 		}
 		return(
-			<View style={{justifyContent:"center",flex:1}}>
-				<Text>Location Details not available.Turn on location and restart the app</Text>	
+			<View style={{justifyContent:"center",paddingHorizontal:20,flex:1,backgroundColor:"white",alignItems:"center"}}>
+				<Text style={{fontWeight:"500",fontSize:20}}>Location Details not available.Turn on location and restart the app</Text>	
 			</View>
 		);
 	}

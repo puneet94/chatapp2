@@ -45,14 +45,14 @@ export class ProfilePageComponent extends Component {
             <RkText rkType='header3' style={styles.space}>{user.posts.length}</RkText>
             <RkText rkType='secondary1 hintColor'>Posts</RkText>
           </View>
-          <View style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={()=>{Actions.followlist({followers:true});}}>
             <RkText rkType='header3' style={styles.space}>{formatNumber(user.followers.length)}</RkText>
             <RkText rkType='secondary1 hintColor'>Followers</RkText>
-          </View>
-          <View style={styles.section}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.section} onPress={()=>{Actions.followlist({following:true});}}>
             <RkText rkType='header3' style={styles.space}>{user.following.length}</RkText>
             <RkText rkType='secondary1 hintColor'>Following</RkText>
-          </View>
+          </TouchableOpacity>
         </View>
         <UserPostsComponent userId = {user._id}></UserPostsComponent>
       </ScrollView>

@@ -1,6 +1,5 @@
 import React, {Component} from "react"; 
 import PhotoUpload from '../search/PhotoUploadComponent';
-import delay from "lodash/delay";
 import {View,Text,
 	StyleSheet,
 	Image,
@@ -27,11 +26,10 @@ import {scale} from '../../utils/scale.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const io = require("socket.io-client");
 const moment = require('moment');
-import _ from "lodash";
 import {fetchMessagesChatRoom, fetchChatRoom,sendMessageChatRoom,uploadImage} from "../../services/messages";
 import {URL} from "../../actions/constants";
 import {updateChatRoom,getAllChats,chatTransferred,createChatRoom} from "../../actions/chats";
-
+import delay from "lodash/delay";
 const userPage=(id)=>{
 	Actions.profile({userId:id});
 }
@@ -96,7 +94,6 @@ class ChatBoxComponent extends Component {
 	}
 	
 	static navigationOptions = ({navigation}) => {
-		
 		let renderAvatar = (user) => {
 		  return (
 			<TouchableOpacity onPress={() => userPage(user._id)}>
@@ -104,19 +101,16 @@ class ChatBoxComponent extends Component {
 			</TouchableOpacity>
 		  );
 		};
-	
 		let renderTitle = (user) => {
 		  return (
 			<TouchableOpacity onPress={() => userPage(user._id)}>
 			  <View style={styles.header}>
-				<RkText rkType='header5'>{`${user.anonName}`}</RkText>
-				
+					<RkText style={{color:"white"}} rkType='header5'>{`${user.anonName}`}</RkText>
 			  </View>
 			</TouchableOpacity>
 		  )
 		};	
 		let user = navigation.state.params.user||{anonName: "loading..",picture:"https://cdn.pixabay.com/photo/2017/01/06/19/15/soap-bubble-1958650_960_720.jpg"};
-
 		let rightButton = renderAvatar(user);
 		let title = renderTitle(user);
 		return (
@@ -199,7 +193,7 @@ class ChatBoxComponent extends Component {
 			}
 		} else {
 			if(this.listRef){
-				this.listRef.scrollToEnd();
+				delay(() => this.listRef.scrollToEnd(), 100);
 			}
 		}
 	}

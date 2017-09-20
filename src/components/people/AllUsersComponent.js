@@ -1,6 +1,6 @@
 "use strict";
 import React from "react";
-import { View, Text,Button,FlatList,ActivityIndicator } from "react-native";
+import { View, Text,Button,FlatList,ActivityIndicator,Alert } from "react-native";
 import {connect} from 'react-redux';
 import {getAllUsers,refreshAllPage,incrementAllPage} from '../../actions/users';
 import {Actions} from 'react-native-router-flux';
@@ -17,8 +17,8 @@ class AllUsersComponent extends React.Component {
 		this.props.getAllUsers(this.props.all.page);
 	}
 	loadMoreUsers = async ()=>{
-		await this.props.incrementAllPage();
 		
+		this.props.incrementAllPage();
 		if(this.props.all.pages>=this.props.all.page){
 			this.props.getAllUsers(this.props.all.page);
 		}
@@ -37,22 +37,19 @@ class AllUsersComponent extends React.Component {
 			);
 	}
 	render=()=>{
-		
 		if(this.props.all){
 			return (
-				<View style={{flex:1}}>
+				<View style={{flex:1,backgroundColor:"white"}}>
 					<FlatList
 					data={this.props.all.users}
 					renderItem={this.renderItem}
 					keyExtractor={this._keyExtractor}
 					onEndReached={this.loadMoreUsers}
-					onEndReachedThreshold={200}
+					onEndReachedThreshold={0.1}
 					onRefresh={this.refreshUsers}
 					ListFooterComponent = {this.renderFooter}
 					refreshing={this.props.all.refreshing}
 					/>
-				
-				
 				</View>
 			);
 		}

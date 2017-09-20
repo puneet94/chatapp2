@@ -95,13 +95,13 @@ class ProfileSettingsComponent extends React.Component {
               <RkText rkType='header6 primary'>INFO</RkText>
             </View>
             <View style={styles.row}>
-              <RkText style={{flex:1,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Name</RkText>
+              <RkText style={{flex:0.5,color:"rgb(218,218,218)",fontWeight:'100'}} rkType='header6  clear'>Name</RkText>
                 <TextInput 
                 style={{flex:1,textAlign: "right",alignSelf:"flex-end",fontWeight:'500',fontSize:18}}
                   onChangeText={(text) => this.props.userSetDetails({anonName: text})}
                   value={user.anonName}
                   underlineColorAndroid = 'transparent'
-                  maxLength = {15}  
+                  maxLength = {25}  
               />
             </View>
             <View style={styles.row}>

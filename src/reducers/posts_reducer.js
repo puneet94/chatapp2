@@ -14,7 +14,12 @@ import {
 	SEARCH_POSTS_RECEIVED,
 	SEARCH_NO_POSTS,
 	SET_SEARCH_INTEREST,
-	SET_SEARCH_LOADING} from "../actions/constants";
+	SET_SEARCH_LOADING,
+	SET_SEARCH_EMPTY,
+	OTHER_USER_POSTS_RECEIVED,
+	CURRENT_USER_POSTS_RECEIVED,
+	POST_DELETED,
+	ADD_NEW_POST} from "../actions/constants";
 import keyBy from "lodash/keyBy";
 import keys from "lodash/keys";
 
@@ -53,8 +58,29 @@ const INITIAL_STATE = {
 		interest: null
 
 	},
+	currentUser:{
+		posts: [],
+		loading: false,
+		no_posts: false
+
+	},
+	otherUser:{
+		posts: [],
+		loading: false,
+		no_posts: false
+	},
 	postsHash:{} 
 };
+const sliceArray = (inputArray,value)=>{
+	const indexRemoved = inputArray.indexOf(value);
+	if(indexRemoved>-1){
+		const outputArray  = [...inputArray.slice(0,indexRemoved),...inputArray.slice(indexRemoved+1)];
+		return outputArray;
+	}else{
+		return inputArray;
+	}
+	
+}
 export const posts_reducer = (state=INITIAL_STATE,action)=>{
 	switch(action.type){
 	case LATEST_POSTS_REFRESH:
@@ -70,15 +96,12 @@ export const posts_reducer = (state=INITIAL_STATE,action)=>{
 		return {...state,popular:{...state.popular,page: state.popular.page+1}};
 	case POPULAR_POSTS_LOADING:
 		return {...state,latest:{...state.popular,loading: true}};
-	
 	case NEARBY_POSTS_REFRESH:
 		return {...state,nearby:{...state.nearby,page: 1,refreshing:true}};
 	case NEARBY_POSTS_INCREMENT:
 		return {...state,nearby:{...state.nearby,page: state.nearby.page+1}};
 	case NEARBY_POSTS_LOADING:
 		return {...state,nearby:{...state.nearby,loading: true}};
-	
-	
 	case LATEST_POSTS_RECEIVED:
 		let postsHashNew = keyBy(action.payload.data,(post)=>{
 			return post._id;
@@ -92,7 +115,16 @@ export const posts_reducer = (state=INITIAL_STATE,action)=>{
 			}
 		});
 		return {...state, postsHash:{...state.postsHash,...postsHashNew}, latest:{...state.latest,posts:[...state.latest.posts,...postsIds],pages:action.payload.pages,loading:false}};
-	
+	case OTHER_USER_POSTS_RECEIVED:
+		let postsHashNewOther = keyBy(action.payload.data,(post)=>{
+			return post._id;
+		});
+		return {...state, postsHash:{...state.postsHash,...postsHashNewOther},otherUser:{...state.otherUser,posts:[...keys(postsHashNewOther)],loading:false}};    
+	case CURRENT_USER_POSTS_RECEIVED:
+		let postsHashNewCurrent = keyBy(action.payload.data,(post)=>{
+			return post._id;
+		});
+		return {...state, postsHash:{...state.postsHash,...postsHashNewCurrent},currentUser:{...state.currentUser,posts:[...keys(postsHashNewCurrent)],loading:false}};    
 	case 'POPULAR_POSTS_RECEIVED':
 		let postsHashNew2 = keyBy(action.payload.data,(post)=>{
 			return post._id;
@@ -132,6 +164,15 @@ export const posts_reducer = (state=INITIAL_STATE,action)=>{
 		return {...state,search:{...state.search,loaidng: action.payload}};
 	case SET_SEARCH_INTEREST:
 		return {...state,search:{...state.search,interest: action.payload}};
+
+	case SET_SEARCH_EMPTY:
+		return {...state,search:{
+			posts: [],
+			loading: false,
+			no_posts: false,
+			interest: null
+	
+		}};
 	case POST_USER_LIKED:
 		const postId  = action.payload.postId;
 		const userId = action.payload.userId;
@@ -152,8 +193,27 @@ export const posts_reducer = (state=INITIAL_STATE,action)=>{
 		}else{
 			return state;
 		}
+	case ADD_NEW_POST:
 		
-
+		const newCreatedPost = action.payload.post;
+		newCreatedPost.user = action.payload.user;
+		const newPostsIds = [newCreatedPost._id,...state.latest.posts];
+		const newUserPostsIds = [newCreatedPost._id,...state.currentUser.posts];
+		const newCreatedPostsHash = {...state.postsHash,[newCreatedPost._id]:newCreatedPost};
+		const newCreatedState = {...state,postsHash:newCreatedPostsHash,latest:{...state.latest,posts:newPostsIds},currentUser:{...state.currentUser,posts:newUserPostsIds}};
+		
+		return newCreatedState
+	case POST_DELETED:
+		const newLatestPosts = sliceArray(state.latest.posts,action.payload.postId);
+		const newnearbyPosts = sliceArray(state.nearby.posts,action.payload.postId);
+		const newpopularPosts = sliceArray(state.popular.posts,action.payload.postId);
+		const newcurrentUserPosts = sliceArray(state.currentUser.posts,action.payload.postId);
+		return {...state,
+			latest:{...state.latest,posts:newLatestPosts},
+			nearby:{...state.nearby,posts:newnearbyPosts},
+			popular:{...state.popular,posts:newpopularPosts},
+			currentUser:{...state.currentUser,posts:newcurrentUserPosts}
+		};
 	default:
 		return state;
 	}

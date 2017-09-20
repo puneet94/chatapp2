@@ -25,7 +25,7 @@ export default class SinglePostComponent extends Component {
 						return false;
 				}
 				openSinglePostPage = (post) => {
-					Actions.singlePostPage({post});
+					Actions.singlePostPage({postId:post._id});
 				}
 				
 				render = () => {

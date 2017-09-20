@@ -21,17 +21,22 @@ import {
 		SEARCH_NO_POSTS,
 		SET_SEARCH_INTEREST,
 		POST_USER_UNLIKED,
-		SET_SEARCH_LOADING
+		SET_SEARCH_LOADING,
+		SET_SEARCH_EMPTY,
+		POST_DELETED
 } from "./constants";
 
+
+export const postDeleted = (postId)=>{
+	return (dispatch)=>{
+		dispatch({type:POST_DELETED,payload:{postId}});
+	}
+};
 export const refreshNearbyPage = () => {
 		return (dispatch) => {
 				dispatch({type: NEARBY_POSTS_REFRESH})
 		}
-}
-
-
-
+};
 export const incrementNearbyPage = () => {
 		return (dispatch) => {
 				dispatch({type: NEARBY_POSTS_INCREMENT})
@@ -58,6 +63,11 @@ export const incrementPopularPage = () => {
 		}
 }
 
+export const setSearchEmpty = ()=>{
+	return (dispatch)=>{
+		dispatch({type:SET_SEARCH_EMPTY});
+	}
+};
 export const setSearchInterest = (interest) => {
 		return (dispatch) => {
 				dispatch({type: SET_SEARCH_INTEREST, payload: interest});
@@ -115,7 +125,7 @@ export const getLatestPosts = (page) => {
 								},
 								params: {
 										sort: '-time',
-										limit: 5,
+										limit: 10,
 										page: page
 								}
 						});
@@ -139,30 +149,40 @@ export const getNearbyPosts = (page) => {
 
 		return async(dispatch, getState) => {
 				var location;
+				var params = {
+					distance: 10,
+					limit: 10,
+					page: page,
+					nearby: true
+				};
 				dispatch({type: NEARBY_POSTS_LOADING});
 				try {
+
 						const {jwt_token} = getState().auth;
 						if (getState().user.location) {
-								location = getState().user.location;
-								console.log("location if");
-								console.log(location);
+							
+							location = getState().user.location;
+							const {latitude, longitude} = location.coords;
+							params.latitude = latitude;
+							params.longitude = longitude;
 						} else {
+							try{
 								location = await getLocation();
-								console.log("location else");
-								console.log(location);
+								const {latitude, longitude} = location.coords;
+								params.latitude = latitude;
+								params.longitude = longitude;
+								dispatch({type:USER_LOCATION_RECEIVED,payload: location});       
+								
+							}catch(e){
+								
+							}
+							
 						}
-						const {latitude, longitude} = location.coords;
 						let response = await axios.get(`${URL}post/getPosts`, {
 								headers: {
 										'Authorization': `Bearer ${jwt_token}`
 								},
-								params: {
-										latitude,
-										longitude,
-										distance: 10,
-										limit: 5,
-										page: page
-								}
+								params
 						});
 						dispatch({
 								type: 'NEARBY_POSTS_RECEIVED',
@@ -233,8 +253,8 @@ export const submitViews = (postId) => {
 								}
 						});
 				} catch (e) {
-						console.log("exception in submit views");
-						console.log(e);
+						
+						
 				}
 		};
 };
@@ -258,8 +278,7 @@ export const deleteLike = (postId) => {
 										"Authorization": `Bearer ${jwt_token}`
 								}
 						});
-						console.log("dlete like");
-						console.log(response);
+						
 				} catch (e) {
 						console.log("error in delete like");
 						console.log(e);
@@ -270,8 +289,7 @@ export const deleteLike = (postId) => {
 export const deletePost = (postId) => {
 		return async(dispatch, getState) => {
 				const {jwt_token} = getState().auth;
-				console.log("the token");
-				console.log(jwt_token);
+				dispatch({type:POST_DELETED,payload:{postId}});
 				let response = await axios.delete(`${URL}post/delete/${postId}`, {
 						headers: {
 								"Authorization": `Bearer ${jwt_token}`

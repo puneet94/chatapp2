@@ -19,7 +19,7 @@ class SubmitPostComponent extends Component{
 		};
 		let renderTitle = () => {
 		  return (
-				<RkText rkType='header5'>{"Submit Post"}</RkText>
+				<RkText rkType='header5' style={{color:"white"}}>{"Submit Post"}</RkText>
 		  )
 		};	
 		let rightButton = renderPreview();
@@ -75,6 +75,7 @@ class SubmitPostComponent extends Component{
                 <Text>{"Add tags to your post. Makes it easy to search"}</Text>
                 </View>
                 <TextInput
+                            autoFocus={true}
                             placeholder = "#football #busy-work"
 							multiline={true}
 							style={[styles.textInput, {height: Math.max(35, this.state.height)}]}
@@ -104,6 +105,7 @@ class SubmitPostComponent extends Component{
             }
         }
         catch(e){
+            console.log(e);
             console.log("erorr");
         }
     }

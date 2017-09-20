@@ -17,7 +17,7 @@ class PopularPostsComponent extends React.Component {
 		this.props.getPopularPosts(this.props.popular.page);
 	}
 	loadMorePosts = async ()=>{
-		await this.props.incrementPopularPage();
+		this.props.incrementPopularPage();
 		if(this.props.popular.pages>=this.props.popular.page){
 			this.props.getPopularPosts(this.props.popular.page);
 		}
@@ -53,7 +53,7 @@ class PopularPostsComponent extends React.Component {
 						renderItem={this.renderItem}
 						keyExtractor={this._keyExtractor}
 						onEndReached={this.loadMorePosts}
-						onEndReachedThreshold={0.5}
+						onEndReachedThreshold={0.1}
 						ListHeaderComponent = {this.renderHeader}
 						ListFooterComponent = {this.renderFooter}
 						onRefresh={this.refreshPosts}

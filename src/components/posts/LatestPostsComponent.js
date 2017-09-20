@@ -17,7 +17,7 @@ class LatestPostsComponent extends Component {
 		this.props.getLatestPosts(this.props.latest.page);
 	}
 	loadMorePosts = async ()=>{
-		await this.props.incrementLatestPage();
+		this.props.incrementLatestPage();
 		
 		if(this.props.latest.pages>=this.props.latest.page){
 			this.props.getLatestPosts(this.props.latest.page);
@@ -43,7 +43,7 @@ class LatestPostsComponent extends Component {
 						renderItem={this.renderItem}
 						keyExtractor={this._keyExtractor}
 						onEndReached={this.loadMorePosts}
-						onEndReachedThreshold={200}
+						onEndReachedThreshold={0.1}
 						onRefresh={this.refreshPosts}
 						ListFooterComponent = {this.renderFooter}
 						refreshing={this.props.latest.refreshing}

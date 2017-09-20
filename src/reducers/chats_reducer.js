@@ -36,9 +36,6 @@ export const chats_reducer = (state=INITIAL_STATE,action)=>{
 	case CHAT_TRANSFERRED:
 		const chatRoomId = action.payload.roomId;
 		
-		console.log("after sending message");
-		console.log(action.payload);
-		console.log(state.chatsHash[chatRoomId].lastMessage);
 		const chatRoomLastMessage = {...state.chatsHash[chatRoomId].lastMessage,message:action.payload.message,
 				user:action.payload.user,type:action.payload.type}
 		

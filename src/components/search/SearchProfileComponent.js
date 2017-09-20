@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text,Button,FlatList,ActivityIndicator,TextInput } from "react-native";
 import {connect} from "react-redux";
-import {getSearchUsers,setSearchInterest} from "../../actions/users";
+import {getSearchUsers,setSearchInterest,setUserSearchEmpty} from "../../actions/users";
 import {Actions} from "react-native-router-flux";
 import SingleUserComponent from "../people/SingleUserComponent";
 class SearchProfileComponent extends React.Component {
@@ -62,6 +62,9 @@ class SearchProfileComponent extends React.Component {
 		}
 		
 	}
+	componentWillUnmount=()=>{
+		this.props.setUserSearchEmpty();
+	}
 }
 
 const mapStateToProps= (state) => {
@@ -70,4 +73,4 @@ const mapStateToProps= (state) => {
 		usersHash:state.users.usersHash
 	};
 };
-export default connect(mapStateToProps,{getSearchUsers,setSearchInterest})(SearchProfileComponent);
+export default connect(mapStateToProps,{setUserSearchEmpty,getSearchUsers,setSearchInterest})(SearchProfileComponent);

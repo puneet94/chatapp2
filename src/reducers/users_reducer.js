@@ -11,7 +11,9 @@ import {
 	SEARCH_USERS_RECEIVED,
 	SEARCH_NO_USERS,
 	SET_SEARCH_USER_INTEREST,
-	SET_SEARCH_USER_LOADING} from "../actions/constants";
+	SET_SEARCH_USER_LOADING,
+	SET_USER_SEARCH_EMPTY
+} from "../actions/constants";
 import keyBy from "lodash/keyBy";
 import keys from "lodash/keys";
 
@@ -100,8 +102,14 @@ export const users_reducer = (state=INITIAL_STATE,action)=>{
 		return {...state,search:{...state.search,loaidng: action.payload}};
 	case SET_SEARCH_USER_INTEREST:
 		return {...state,search:{...state.search,interest: action.payload}};
-	
-        default:
+	case SET_USER_SEARCH_EMPTY:
+		return {...state,search:{
+			users: [],
+			loading: false,
+			no_posts: false,
+			interest: null
+		}};
+    default:
             return state;
     }
 }

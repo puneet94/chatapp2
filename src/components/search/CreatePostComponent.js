@@ -17,7 +17,8 @@ class CreatePostComponent extends Component{
 			showLibraryImage: false,
 			height: 50,
 			choosePicture: "CHOOSE PICTURE",
-			pageLoading: false
+			pageLoading: false,
+			postTextFocus: true
 		};
 	}
 
@@ -29,7 +30,7 @@ class CreatePostComponent extends Component{
 		};
 		let renderTitle = () => {
 		  return (
-				<RkText rkType='header5'>{"Create Post"}</RkText>
+				<RkText rkType='header5' style={{color:"white"}}>{"Create Post"}</RkText>
 		  )
 		};	
 		let rightButton = renderPreview();
@@ -64,6 +65,8 @@ class CreatePostComponent extends Component{
 		Actions.submitpost();		
 	}
 	openGalleryPage = ()=>{
+		this.setState({postTextFocus: false});
+		
 		Keyboard.dismiss();
 		Actions.galleryPage();
 	}
@@ -106,7 +109,7 @@ class CreatePostComponent extends Component{
 				<View style={styles.textInputContainer}>
 					<Text>{300-this.props.createPost.content.length}</Text>
 					<TextInput
-							autoFocus={true}
+							autoFocus={this.state.postTextFocus}
 							multiline={true}
 							style={[styles.textInput, {height: Math.max(50, this.state.height)}]}
 							onChange={this.onTextChange}
@@ -118,13 +121,13 @@ class CreatePostComponent extends Component{
 				</View>
 				<View style={styles.buttons}>
 					<RkButton style={styles.button} onPress={()=>this.openGalleryPage()} rkType='clear link'>IMAGE LIBRARY</RkButton>
-						<View style={styles.separator}/>
-						<PhotoUpload pickerTitle={"Send Image"} style = {{backgroundColor: 'green'}} 
+					<View style={styles.separator}/>
+					<PhotoUpload pickerTitle={"Send Image"} style = {{backgroundColor: 'green'}} 
 						onButtonCancel = {()=>{this.buttonCancel()}}
 						onButtonPress =  {()=>{this.buttonPress()}} 
   							onPhotoSelect={this.showLibraryImage}   quality={100}>
 						  <RkText  rkType='clear link'>{this.props.createPost.libraryImageLoading?"LOADING...":"CHOOSE PICTURES"}</RkText>	
- 						</PhotoUpload>	
+ 					</PhotoUpload>	
 					</View>
 				 <View style={styles.imagesContainer}>
 					{this.props.createPost.selectLibraryImage?<Image style = {{width: 300, height: 300}}
@@ -174,7 +177,7 @@ const styles = RkStyleSheet.create(theme => ({
 	},
 	buttons: {
 	  flexDirection: 'row',
-	  paddingVertical: 8,
+	  paddingVertical: 4,
 	 
 	},
 	button: {

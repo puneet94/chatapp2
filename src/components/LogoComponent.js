@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Text,AsyncStorage,Image,Button,TouchableHighlight,Modal} from 'react-native';
+import {View,Text,AsyncStorage,Image,Button,TouchableHighlight,Modal,ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import {fetchUserDetails,fetchUserLocationDetails,userSetDetails} from '../actions/user.js';
@@ -19,6 +19,7 @@ class LogoComponent extends Component{
 		this.setState({modalVisible: visible});
 	  }
 	componentWillMount = async ()=>{
+		
 		this.props.fetchUserLocationDetails();
 		try {
 			const value = await AsyncStorage.getItem(JWT_TOKEN);
@@ -26,17 +27,14 @@ class LogoComponent extends Component{
 			if (value !== null){
 				await this.props.fetchUserDetails(value);
 				this.initiatePushNotification();
-				
 			}else{
-				//Actions.auth();
-				//this.props.login();
+				this.setState({
+					loading: false
+				});
 			}
 		} catch (error) {
-			console.log("logo catch");
-			console.log(error);
 			//Actions.auth();
 			this.props.login();
-		}finally{
 			this.setState({
 				loading: false
 			});
@@ -52,17 +50,17 @@ class LogoComponent extends Component{
 		if(this.state.loading){
 			return (
 				<View style={{flex:1,backgroundColor:"white",justifyContent:"center",alignItems:"center"}}>            
-					<Image source={require('./main_icon.png')} style={{width:100,height:100,marginBottom:10}} />
-					<Text style={{fontSize:32,fontWeight:"600"}}>{"Gossip"}</Text>
+					<Image source={require('./main_icon2.png')} style={{width:100,height:100,marginBottom:10}} />
+					<Text style={{fontSize:42,fontWeight:"600"}}>{"Gossip"}</Text>
+					<ActivityIndicator size="small" color="black"/>
 				</View>   
-				
 			);
 		}
 		else{
 			return (
 				<View style={{flex:1,backgroundColor:"white",justifyContent:"center",alignItems:"center"}}>            
 					
-					<Image source={require('./main_icon.png')} style={{width:100,height:100,marginBottom:10}} />
+					<Image source={require('./main_icon2.png')} style={{width:100,height:100,marginBottom:10}} />
 					<Text style={{fontSize:42,fontWeight:"600"}}>{"Gossip"}</Text>
 					<Modal
           				animationType="slide"
@@ -88,30 +86,22 @@ class LogoComponent extends Component{
 							Privacy Policy
 						</Text>
 					</TouchableHighlight>
-					<Button title="accept & continue" onPress={()=>{this.doLogin()}}/>
+					<Button style={{backgroundColor: 'rgb(50,25,110)'}} title="accept & continue" onPress={()=>{this.doLogin()}}/>
 				</View>   
 			);
 		}
 	}
+	
 	initiatePushNotification=()=>{
 		var PushNotification = require('react-native-push-notification');
 		PushNotification.configure({
 			onRegister: (token)=> {
-				console.log(  token.token );
 				this.props.userSetDetails({device_token:token.token});
-				/*Alert.alert(
-					'Delete Post',
-					token.token,
-					[
-					  {text: 'Yes'},
-					  {text: 'Cancel'}
-					],
-					{ cancelable: true }
-				  );*/
+				
 			},
 			// (required) Called when a remote or local notification is opened or received
 			onNotification: function(notification) {
-				console.log( 'NOTIFICATION:', notification );
+				
 			},
 			// ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
 			senderID: "895971150926",

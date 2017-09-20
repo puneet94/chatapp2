@@ -5,7 +5,8 @@ import {
 		NEARBY_USERS_INCREMENT,
 		NEARBY_USERS_LOADING,
         NEARBY_USERS_REFRESH,
-        NEARBY_USERS_RECEIVED,
+		NEARBY_USERS_RECEIVED,
+		USER_LOCATION_RECEIVED,
 		URL,
 		ALL_USERS_REFRESH,
 		ALL_USERS_RECEIVED,
@@ -15,7 +16,8 @@ import {
 		SEARCH_USERS_RECEIVED,
 		SEARCH_NO_USERS,
 		SET_SEARCH_USER_INTEREST,
-		SET_SEARCH_USER_LOADING
+		SET_SEARCH_USER_LOADING,
+		SET_USER_SEARCH_EMPTY
 } from "./constants";
 
 export const refreshNearbyPage = () => {
@@ -44,6 +46,11 @@ export const setSearchInterest = (interest) => {
 		};
 };
 
+export const setUserSearchEmpty = ()=>{
+	return (dispatch)=>{
+		dispatch({type:SET_USER_SEARCH_EMPTY});
+	}
+};
 export const getSearchUsers = (interest) => {
 
 		const searchUsersFunction = async(dispatch, getState) => {
@@ -81,7 +88,6 @@ export const getSearchUsers = (interest) => {
 				trailing: false
 		});
 }
-
 export const getAllUsers = (page) => {
 		return async(dispatch, getState) => {
 				const {jwt_token} = getState().auth;
@@ -92,7 +98,7 @@ export const getAllUsers = (page) => {
 										'Authorization': `Bearer ${jwt_token}`
 								},
 								params: {
-										limit: 5,
+										limit: 10,
                                         page: page,
                                         all: true
 								}
@@ -114,34 +120,44 @@ export const getAllUsers = (page) => {
 }
 
 export const getNearbyUsers = (page) => {
-
 		return async(dispatch, getState) => {
 				var location;
+				var params = {
+					distance: 10,
+					limit: 10,
+					page: page,
+					nearby: true
+				};
 				dispatch({type: NEARBY_USERS_LOADING});
-
 				try {
 						const {jwt_token} = getState().auth;
-						if (!getState().user.user_location_error) {
-								location = getState().user.location;
-								console.log(location);
+						if (getState().user.location) {
+
+
+							location = getState().user.location;
+
+							const {latitude, longitude} = location.coords;
+							params.latitude = latitude;
+							params.longitude = longitude;
 						} else {
+							try{
 								location = await getLocation();
-								console.log("from second");
-								console.log(location);
+								const {latitude, longitude} = location.coords;
+								params.latitude = latitude;
+								params.longitude = longitude;
+								dispatch({type:USER_LOCATION_RECEIVED,payload: location});       
+
+							}catch(e){
+								
+							}
+							
 						}
-						const {latitude, longitude} = location.coords;
+						
 						let response = await axios.get(`${URL}user/getUsers`, {
 								headers: {
 										'Authorization': `Bearer ${jwt_token}`
 								},
-								params: {
-										latitude,
-										longitude,
-										distance: 10,
-										limit: 5,
-                                        page: page,
-                                        nearby: true
-								}
+								params
 						});
 						dispatch({
 								type: NEARBY_USERS_RECEIVED,
@@ -152,7 +168,7 @@ export const getNearbyUsers = (page) => {
 								}
 						});
 				} catch (e) {
-						console.log("nearby users error");
+						
 						console.log(e);
 				}
 		};

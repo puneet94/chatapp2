@@ -2,7 +2,6 @@
 import React,{Component} from "react";
 import { View, Text,Button,Alert,StyleSheet,Image,ScrollView,Dimensions,TouchableOpacity } from "react-native";
 import {connect} from "react-redux";
-
 import {Actions} from "react-native-router-flux";
 import {
 	RkCard,
@@ -17,33 +16,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 class PostPageComponent extends Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			likes: props.post.likes.length?props.post.likes.length:1
-		}
-	}
-	showDeleteAlert= ()=>{
-		Alert.alert(
-			'Alert Title',
-			'My Alert Msg',
-			[
-			  {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
-			  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-			  {text: 'OK', onPress: () => console.log('OK Pressed')},
-			],
-			{ cancelable: false }
-		  );
 	}
 	componentWillMount = ()=>{
 		this.props.navigation.setParams({
 			user: this.props.user,
-			deletePost: this.props.deletePost
+			deletePost: this.props.deletePost,
+			postUser: this.props.postsHash[this.props.postId].user
 		});
 	}
 	static navigationOptions = ({navigation}) => {
 		const deletePost = ()=>{
-			navigation.state.params.deletePost(navigation.state.params.post._id);
+			navigation.state.params.deletePost(navigation.state.params.postId);
 			Actions.pop();
-			
 		};
 		const showDeleteAlert= ()=>{
 			Alert.alert(
@@ -57,8 +41,8 @@ class PostPageComponent extends Component {
 			  );
 		};
 		let isUser = false;
-		if(navigation.state.params.user && navigation.state.params.post){
-			isUser = navigation.state.params.user._id===navigation.state.params.post.user._id;
+		if(navigation.state.params.user && navigation.state.params.postUser){
+			isUser = navigation.state.params.user._id===navigation.state.params.postUser._id;
 		}
 		let renderDelete = () => {
 			if(isUser){
@@ -69,10 +53,7 @@ class PostPageComponent extends Component {
 			}else{
 				return (<View></View>);
 			}
-		  ;
 		};
-	
-		
 		let rightButton = renderDelete();
 		let title = "Post";
 		return (
@@ -83,11 +64,10 @@ class PostPageComponent extends Component {
 	  };
 	
 	submitLike = ()=>{
-		this.props.submitLike(this.props.post._id);
+		this.props.submitLike(this.props.postId);
 	}
 	checkLike = ()=>{
-		
-		if(this.props.user.likes.indexOf(this.props.post._id)!=-1){
+		if(this.props.user.likes.indexOf(this.props.postId)!=-1){
 		
 			return true;
 		}else{
@@ -96,18 +76,18 @@ class PostPageComponent extends Component {
 	}
 	deleteLike = ()=>{
 		
-		this.props.deleteLike(this.props.post._id);
+		this.props.deleteLike(this.props.postId);
 	}
 	componentDidMount = ()=>{
-		this.props.submitViews(this.props.post._id);
+		this.props.submitViews(this.props.postId);
 	}
 	render=()=>{
-		const post  = this.props.post;
+		const post  = this.props.postsHash[this.props.postId];
 		return (
 			<View style={styles.mainContainer}>
 				<ScrollView style={styles.root}>
 					<RkCard rkType="article">
-						{post.image?<Image rkCardImg source={{uri:post.image}} style={{height:400}}/>:<View></View>}
+						<Image rkCardImg source={{uri: post.image || "https://pimg.tradeindia.com/00043756/b/0/Plain-Dupion-Silk-Fabric.jpg"}} style={{height:400}}/>
 						<View rkCardHeader>
 							<View style={{flex:8}}>
 								<View style={ styles.postInterest}>
@@ -125,7 +105,7 @@ class PostPageComponent extends Component {
 							</View>
 						</View>
 						<View rkCardFooter>
-							<SocialBar likes={this.props.post.likes} views = {post.views} time={post.time} updateLikes={this.checkLike()?this.deleteLike:this.submitLike} liked={this.checkLike()} loc={post.loc}/>
+							<SocialBar likes={post.likes} views = {post.views} time={post.time} updateLikes={this.checkLike()?this.deleteLike:this.submitLike} liked={this.checkLike()} loc={post.loc}/>
 						</View>
 					</RkCard>
 				</ScrollView>
@@ -137,7 +117,8 @@ class PostPageComponent extends Component {
 }
 const mapStateToProps = (state)=>{
 	return {
-		user: state.user.user
+		user: state.user.user,
+		postsHash:state.posts.postsHash
 	};
 };
 export default connect(mapStateToProps,{submitLike,deleteLike,deletePost,submitViews})(PostPageComponent);

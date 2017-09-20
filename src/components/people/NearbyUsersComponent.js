@@ -17,7 +17,7 @@ class NearbyUsersComponent extends React.Component {
 		this.props.getNearbyUsers(this.props.nearby.page);
 	}
 	loadMoreUsers = async ()=>{
-		await this.props.incrementNearbyPage();
+		this.props.incrementNearbyPage();
 		if(this.props.nearby.pages>=this.props.nearby.page){
 			this.props.getNearbyUsers(this.props.nearby.page);
 		}
@@ -30,14 +30,13 @@ class NearbyUsersComponent extends React.Component {
 	}
 	renderFooter = ()=>{
 		return(
-			
 			this.props.nearby.loading?<ActivityIndicator size="large" color="black"/>:<View/>
 		);
 	}
 	render=()=>{
-		if(this.props.nearby&&!this.props.location_error){
+		if(this.props.nearby){
 			return (
-				<View style={{flex:1}}>
+				<View style={{flex:1,backgroundColor:"white"}}>
 					<FlatList
 						data={this.props.nearby.users}
 						renderItem={this.renderItem}
@@ -54,8 +53,8 @@ class NearbyUsersComponent extends React.Component {
 			);
 		}
 		return(
-			<View style={{justifyContent:"center",flex:1}}>
-				<Text>Location Details not available.Turn on location and restart the app</Text>	
+			<View style={{justifyContent:"center",paddingHorizontal:20,flex:1,backgroundColor:"white",alignItems:"center"}}>
+				<Text style={{fontWeight:"500",fontSize:20}}>Location Details not available.Turn on location and restart the app</Text>	
 			</View>
 		);
 	}

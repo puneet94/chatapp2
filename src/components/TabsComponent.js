@@ -1,22 +1,53 @@
 "use strict";
 
 import React,{Component} from "react";
-import { View, Text,TouchableOpacity,StyleSheet } from "react-native";
+import { View, Text,TouchableOpacity,StyleSheet, Platform, BackHandler, ToastAndroid } from "react-native";
 import HomePage from "../screen/HomePage";
 import PeoplePage from "../screen/PeoplePage";
 import ChatsPage from "../screen/ChatsPage";
 import ProfilePage from "../screen/ProfilePage";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Actions} from "react-native-router-flux";
+
 class FacebookTabBar extends Component{
 	constructor(props){
 		super(props);
 		this.tabIcons  = [];
+		this.backButtonListener = null;
+		this.lastBackButtonPress = null;
 	}
-	
-  
+	componentWillMount  = ()=>{
+		if (Platform.OS === 'android') {
+			this.initiateBackHandler();
+			}
+	}
+	componentWillUnmount = ()=> {
+		if (Platform.OS === 'android') {
+		this.backButtonListener.remove();}
+	}
+  initiateBackHandler = ()=>{
+			this.backButtonListener = BackHandler.addEventListener('hardwareBackPress', ()=> {
+			if(Actions.currentScene!='tabs'){
+				Actions.pop();			
+				return false;
+			}
+			else{
+				ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
+			}
+			if (this.lastBackButtonPress + 2000 >= new Date().getTime()) {
+				BackHandler.exitApp();
+				return true;
+			}
+		
+			this.lastBackButtonPress = new Date().getTime();
+				
+		});
+		   
+	}
 	componentDidMount = ()=> {
-	  this._listener = this.props.scrollValue.addListener(this.setAnimationValue);
+		this._listener = this.props.scrollValue.addListener(this.setAnimationValue);
+	
 	}
   
 	setAnimationValue = ({ value, })=> {
