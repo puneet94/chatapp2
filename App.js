@@ -24,6 +24,7 @@ import ProfileSettingsComponent from "./src/components/user/ProfileSettingsCompo
 import LogoComponent from "./src/components/LogoComponent.js";
 import PostPageComponent from "./src/components/posts/PostPageComponent.js";
 bootstrap();
+//made a test
 //#1919ff
 export default class App extends Component {
 	render=()=>{
@@ -59,6 +60,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
-		
+
 	},
 });
